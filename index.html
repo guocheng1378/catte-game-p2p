@@ -11,7 +11,7 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 .c{max-width:800px;margin:0 auto;padding:10px}
 .h{text-align:center;padding:15px 0}.h h1{color:#ffd700;font-size:24px}.h p{color:#888;font-size:11px}
 .lang-bar{display:flex;justify-content:center;gap:10px;margin-bottom:15px}
-.lang-btn{padding:6px 15px;border:2px solid rgba(255,255,255,.3);border-radius:20px;background:transparent;color:#aaa;font-size:12px;cursor:pointer;transition:all .2s}
+.lang-btn{padding:6px 15px;border:2px solid rgba(255,255,255,.3);border-radius:20px;background:transparent;color:#aaa;font-size:12px;cursor:pointer}
 .lang-btn.active{border-color:#ffd700;color:#ffd700;background:rgba(255,215,0,.1)}
 .p{background:rgba(255,255,255,.05);border-radius:15px;padding:20px;margin-bottom:15px}
 .p h2{color:#fff;font-size:18px;margin-bottom:15px;text-align:center}
@@ -54,54 +54,53 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 </head>
 <body>
 <div class="c">
-<div class="h"><h1 id="title">🃏 Cát Tệ</h1><p id="subtitle">P2P Online Game</p></div>
+<div class="h"><h1 id="title">🃏 ຊາເຈົ້າ</h1><p id="subtitle">ຫຼິ້ນອອນລາຍ P2P</p></div>
 <div class="lang-bar">
 <button class="lang-btn active" id="btn_lo" onclick="setLang('lo')">🇱🇦 ລາວ</button>
 <button class="lang-btn" id="btn_zh" onclick="setLang('zh')">🇨🇳 中文</button>
 <button class="lang-btn" id="btn_en" onclick="setLang('en')">🇬🇧 English</button>
 </div>
-<div id="cs2" class="cs2 wait" id="status">Connecting...</div>
+<div id="cs2" class="cs2 wait">ກຳລັງເຊື່ອມຕໍ່...</div>
 <div id="lb">
-<div class="p" id="cp"><h2 id="h_create">🎮 Create Room</h2>
-<div class="ig"><label id="l_name">Your Name</label><input type="text" id="mn" value=""></div>
-<button class="b bg bf" onclick="cr()" id="btn_create">Create Room</button></div>
-<div class="p" id="wp" style="display:none"><h2 id="h_wait">⏳ Waiting</h2>
-<div class="rib"><div style="color:#888;font-size:12px" id="l_share">Send this ID to friend</div>
+<div class="p" id="cp"><h2 id="h_create">🎮 ສ້າງຫ້ອງ</h2>
+<div class="ig"><label id="l_name">ຊື່ຫຼິ້ນ</label><input type="text" id="mn" value=""></div>
+<button class="b bg bf" onclick="cr()" id="btn_create">ສ້າງຫ້ອງ</button></div>
+<div class="p" id="wp" style="display:none"><h2 id="h_wait">⏳ ກຳລັງລໍຖ້າ</h2>
+<div class="rib"><div style="color:#888;font-size:12px" id="l_share">ສົ່ງລະຫັດນີ້ໃຫ້ໝູ່</div>
 <div class="id" id="rid">-</div>
-<button class="b" style="background:rgba(0,255,136,.2);color:#00ff88;border:1px solid #00ff88;padding:6px 20px;border-radius:15px;font-size:12px" onclick="cp2()" id="btn_copy">📋 Copy</button>
-<div style="color:#ff9800;font-size:11px;margin-top:8px" id="l_warn">⚠️ Keep page open!</div></div>
-<div style="color:#fff;font-size:13px;margin:10px 0"><span id="l_online">Online</span>: <span id="oc">1</span></div>
+<button class="b" style="background:rgba(0,255,136,.2);color:#00ff88;border:1px solid #00ff88;padding:6px 20px;border-radius:15px;font-size:12px" onclick="cp2()" id="btn_copy">📋 ຄັດລອກ</button>
+<div style="color:#ff9800;font-size:11px;margin-top:8px" id="l_warn">⚠️ ຢ່າປິດໜ້າຈໍ!</div></div>
+<div style="color:#fff;font-size:13px;margin:10px 0"><span id="l_online">ອອນລາຍ</span>: <span id="oc">1</span></div>
 <div id="wp2"></div>
-<button class="b bgr bf" id="bs" onclick="sg()" disabled id="btn_start">Start (2 players needed)</button></div>
-<div class="p"><h2 id="h_join">🔗 Join Room</h2>
-<div class="ig"><label id="l_name2">Your Name</label><input type="text" id="jn" value=""></div>
-<div class="ig"><label id="l_rid">Room ID from friend</label><input type="text" id="jrid" placeholder="4-digit code"></div>
-<button class="b bgr bf" onclick="jr()" id="btn_join">Join Room</button>
-<div style="color:#ff9800;font-size:11px;margin-top:10px;text-align:center" id="l_warn2">⚠️ Don't close after joining!</div></div>
+<button class="b bgr bf" id="bs" onclick="sg()" disabled id="btn_start">ເລີ່ມຫຼິ້ນ (ຕ້ອງການ 2 ຄົນ)</button></div>
+<div class="p"><h2 id="h_join">🔗 ເຂົ້າຫ້ອງ</h2>
+<div class="ig"><label id="l_name2">ຊື່ຫຼິ້ນ</label><input type="text" id="jn" value=""></div>
+<div class="ig"><label id="l_rid">ລະຫັດຫ້ອງ</label><input type="text" id="jrid" placeholder="ລະຫັດ 4 ຕົວເລກ"></div>
+<button class="b bgr bf" onclick="jr()" id="btn_join">ເຂົ້າຫ້ອງ</button>
+<div style="color:#ff9800;font-size:11px;margin-top:10px;text-align:center" id="l_warn2">⚠️ ຢ່າປິດຫຼັງເຂົ້າຫ້ອງ!</div></div>
 </div>
 <div id="ga" class="ga">
-<div class="sb"><span id="l_round">Round</span>: <span class="hl" id="ri">1/6</span> | <span id="l_turn">Turn</span>: <span class="hl" id="ti">-</span></div>
+<div class="sb"><span id="l_round">ລາຍການ</span>: <span class="hl" id="ri">1/6</span> | <span id="l_turn">ຕອນນີ້</span>: <span class="hl" id="ti">-</span></div>
 <div class="gt"><div class="s" id="sa"></div>
-<div class="pa"><div style="color:#555;font-size:11px" id="l_play">Current Play</div>
-<div id="cc" style="display:flex;justify-content:center;gap:10px;margin:10px 0;min-height:70px;align-items:center"><span style="color:#444;font-size:12px" id="l_wait">Waiting...</span></div>
+<div class="pa"><div style="color:#555;font-size:11px" id="l_play">ກຳລັງຫຼິ້ນ</div>
+<div id="cc" style="display:flex;justify-content:center;gap:10px;margin:10px 0;min-height:70px;align-items:center"><span style="color:#444;font-size:12px" id="l_wait">ລໍຖ້າ...</span></div>
 <div id="cb" style="color:#ffd700;font-size:12px"></div></div>
-<div class="ha"><div style="color:#fff;font-size:13px;margin-bottom:8px"><span id="l_hand">Your Cards</span> <span id="mc">(6)</span></div>
+<div class="ha"><div style="color:#fff;font-size:13px;margin-bottom:8px"><span id="l_hand">ບັດຂອງທ່ານ</span> <span id="mc">(6)</span></div>
 <div id="mh" style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap"></div></div></div>
-<div class="as"><button class="b bgr" id="bp" onclick="pc()" style="display:none">Play</button>
-<button class="b bg" id="bps" onclick="ps()" style="display:none">Pass</button>
-<button class="b bg" id="bn" onclick="nr()" style="display:none">Next Round</button>
-<button class="b br" onclick="location.reload()">Exit</button></div>
+<div class="as"><button class="b bgr" id="bp" onclick="pc()" style="display:none">ຫຼິ້ນ</button>
+<button class="b bg" id="bps" onclick="ps()" style="display:none">ຜ່ານ</button>
+<button class="b bg" id="bn" onclick="nr()" style="display:none">ລາຍການຕໍ່</button>
+<button class="b br" onclick="location.reload()">ອອກ</button></div>
 </div>
 <div class="ts" id="ts"></div>
 <div class="rs" id="rsp"><div class="rb"><h2 id="rt" style="color:#ffd700;font-size:32px;margin-bottom:15px"></h2>
 <p id="ri2" style="color:#fff;margin-bottom:25px"></p>
-<button class="b bg" onclick="location.reload()" id="btn_again">Play Again</button></div></div>
+<button class="b bg" onclick="location.reload()" id="btn_again">ຫຼິ້ນອີກຄັ້ງ</button></div></div>
 <script>
-// Languages
 const L={
-lo:{title:'🃏 ຊາເຈົ້າ Cát Tệ',subtitle:'P2P Online Game',conn:'Connecting...',connOk:'✓ Connected',connFail:'✗ Error',hCreate:'🎮 Create Room',hWait:'⏳ Waiting',hJoin:'🔗 Join Room',name:'Your Name',name2:'Your Name',share:'Send this ID to friend',copy:'📋 Copy',online:'Online',rid:'Room ID from friend',join:'Join',round:'Round',turn:'Turn',play:'Current Play',wait:'Waiting...',hand:'Your Cards',start:'Start (2 players needed)',warn:'⚠️ Keep page open!',warn2:'⚠️ Don\'t close after joining!',again:'Play Again'},
-zh:{title:'🃏 萨切 Cát Tệ',subtitle:'P2P在线游戏',conn:'连接中...',connOk:'✓ 已连接',connFail:'✗ 连接失败',hCreate:'🎮 创建房间',hWait:'⏳ 等待中',hJoin:'🔗 加入房间',name:'你的昵称',name2:'你的昵称',share:'把ID发给朋友',copy:'📋 复制',online:'在线',rid:'朋友的房间ID',join:'加入',round:'轮次',turn:'当前',play:'当前出牌',wait:'等待中...',hand:'你的手牌',start:'开始（需要2人）',warn:'⚠️ 保持页面打开！',warn2:'⚠️ 不要关闭页面！',again:'再来一局'},
-en:{title:'🃏 Cát Tệ',subtitle:'P2P Online Game',conn:'Connecting...',connOk:'✓ Connected',connFail:'✗ Error',hCreate:'🎮 Create Room',hWait:'⏳ Waiting',hJoin:'🔗 Join Room',name:'Your Name',name2:'Your Name',share:'Send this ID to friend',copy:'📋 Copy',online:'Online',rid:'Room ID from friend',join:'Join',round:'Round',turn:'Turn',play:'Current Play',wait:'Waiting...',hand:'Your Cards',start:'Start (2 players needed)',warn:'⚠️ Keep page open!',warn2:'⚠️ Don\'t close after joining!',again:'Play Again'}
+lo:{title:'🃏 ຊາເຈົ້າ',subtitle:'ຫຼິ້ນອອນລາຍ P2P',conn:'ກຳລັງເຊື່ອມຕໍ່...',connOk:'✓ ເຊື່ອມຕໍ່ແລ້ວ',connFail:'✗ ເຊື່ອມຕໍ່ລົ້ມເຫຼວ',hCreate:'🎮 ສ້າງຫ້ອງ',hWait:'⏳ ກຳລັງລໍຖ້າ',hJoin:'🔗 ເຂົ້າຫ້ອງ',name:'ຊື່ຫຼິ້ນ',share:'ສົ່ງລະຫັດນີ້ໃຫ້ໝູ່',copy:'📋 ຄັດລອກ',online:'ອອນລາຍ',rid:'ລະຫັດຫ້ອງ',join:'ເຂົ້າຫ້ອງ',round:'ລາຍການ',turn:'ຕອນນີ້',play:'ກຳລັງຫຼິ້ນ',wait:'ລໍຖ້າ...',hand:'ບັດຂອງທ່ານ',start:'ເລີ່ມຫຼິ້ນ (ຕ້ອງການ 2 ຄົນ)',warn:'⚠️ ຢ່າປິດໜ້າຈໍ!',warn2:'⚠️ ຢ່າປິດຫຼັງເຂົ້າຫ້ອງ!',again:'ຫຼິ້ນອີກຄັ້ງ'},
+zh:{title:'🃏 萨切',subtitle:'P2P在线游戏',conn:'连接中...',connOk:'✓ 已连接',connFail:'✗ 连接失败',hCreate:'🎮 创建房间',hWait:'⏳ 等待中',hJoin:'🔗 加入房间',name:'你的昵称',share:'把ID发给朋友',copy:'📋 复制',online:'在线',rid:'房间ID',join:'加入',round:'轮次',turn:'当前',play:'当前出牌',wait:'等待中...',hand:'你的手牌',start:'开始（需要2人）',warn:'⚠️ 保持页面打开！',warn2:'⚠️ 不要关闭页面！',again:'再来一局'},
+en:{title:'🃏 Cat Te',subtitle:'P2P Online Game',conn:'Connecting...',connOk:'✓ Connected',connFail:'✗ Error',hCreate:'🎮 Create Room',hWait:'⏳ Waiting',hJoin:'🔗 Join Room',name:'Your Name',share:'Share ID to friend',copy:'📋 Copy',online:'Online',rid:'Room ID',join:'Join',round:'Round',turn:'Turn',play:'Playing',wait:'Waiting...',hand:'Your Cards',start:'Start (Need 2)',warn:'⚠️ Keep page open!',warn2:'⚠️ Don\'t close!',again:'Play Again'}
 };
 let lang=localStorage.getItem('cl')||'lo';
 function setLang(l){
@@ -111,11 +110,12 @@ function setLang(l){
   const m=L[l];
   document.getElementById('title').textContent=m.title;
   document.getElementById('subtitle').textContent=m.subtitle;
+  document.getElementById('cs2').textContent=m.conn;
   document.getElementById('h_create').textContent=m.hCreate;
   document.getElementById('h_wait').textContent=m.hWait;
   document.getElementById('h_join').textContent=m.hJoin;
   document.getElementById('l_name').textContent=m.name;
-  document.getElementById('l_name2').textContent=m.name2;
+  document.getElementById('l_name2').textContent=m.name;
   document.getElementById('l_share').textContent=m.share;
   document.getElementById('l_rid').textContent=m.rid;
   document.getElementById('l_online').textContent=m.online;
@@ -137,22 +137,17 @@ let peer=null,myId=null,isHost=false,rh=null,players=[],mi=-1,cr2=0,cci=0,lp=nul
 const SU=['spade','club','diamond','heart'],SS={spade:'♠',club:'♣',diamond:'♦',heart:'♥'},SO={spade:0,club:1,diamond:2,heart:3};
 const RK=['2','3','4','5','6','7','8','9','10','J','Q','K','A'],RV={};RK.forEach((r,i)=>RV[r]=i+2);
 
-// Generate 4-digit ID
-function gen4(){return String(Math.floor(1000+Math.random()*9000))}
-
 function ip(){
   peer=new Peer({config:{iceServers:[{urls:'stun:stun.l.google.com:19302'}]}});
   peer.on('open',id=>{
     myId=id;
     document.getElementById('cs2').className='cs2 ok';
     document.getElementById('cs2').textContent=L[lang].connOk;
-    console.log('ID:',id);
     setInterval(()=>{if(peer&&peer.socket)peer.socket.send({type:'ping'})},25000);
   });
   peer.on('connection',c=>hi(c));
   peer.on('disconnected',()=>{if(peer)peer.reconnect()});
   peer.on('error',e=>{
-    console.error('Error:',e);
     document.getElementById('cs2').className='cs2 err';
     document.getElementById('cs2').textContent=L[lang].connFail;
   });
@@ -160,14 +155,13 @@ function ip(){
 
 function cr(){
   const n=document.getElementById('mn').value.trim();
-  if(!n){alert('Enter name');return}
-  if(!myId){alert('Not connected');return}
+  if(!n){alert(lang==='lo'?'ກະລຸນາໃສ່ຊື່':lang==='zh'?'请输入名字':'Enter name');return}
+  if(!myId){alert(lang==='lo'?'ຍັງບໍ່ເຊື່ອມຕໍ່':lang==='zh'?'未连接':'Not connected');return}
   isHost=true;rh=myId;mi=0;
   players=[{id:myId,name:n,conn:null,hand:[],tungs:0,eliminated:false}];
   document.getElementById('cp').style.display='none';
   document.getElementById('wp').style.display='block';
-  // Show 4-digit code
-  document.getElementById('rid').textContent=gen4();
+  document.getElementById('rid').textContent=String(Math.floor(1000+Math.random()*9000));
   uw();
 }
 
@@ -177,10 +171,9 @@ function hi(c){
     c.on('data',d=>{
       if(d.type==='join'){
         players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});
-        bc();uw();tt(d.name+' joined');
+        bc();uw();tt(d.name+(lang==='lo'?' ເຂົ້າຮ່ວມ':lang==='zh'?' 加入了':' joined'));
       }
       if(d.type==='act')pa(c.peer,d.a,d.d);
-      if(d.type==='ping')c.send({type:'pong'});
     });
   });
 }
@@ -193,8 +186,8 @@ function uw(){
 
 function jr(){
   const n=document.getElementById('jn').value.trim(),id=document.getElementById('jrid').value.trim();
-  if(!n||!id){alert('Fill all');return}
-  tt('Connecting...');
+  if(!n||!id){alert(lang==='lo'?'ກະລຸນາກອກຂໍ້ມູນ':lang==='zh'?'请填写完整':'Fill all');return}
+  tt(lang==='lo'?'ກຳລັງເຊື່ອມຕໍ່...':lang==='zh'?'连接中...':'Connecting...');
   const c=peer.connect(id,{reliable:true});
   c.on('open',()=>{
     isHost=false;rh=id;
@@ -202,16 +195,14 @@ function jr(){
     c.on('data',d=>{
       if(d.type==='act')pa(c.peer,d.a,d.d);
       if(d.type==='gs')hm(d);
-      if(d.type==='ping')c.send({type:'pong'});
     });
-    c.on('close',()=>{tt('Lost!');setTimeout(()=>location.reload(),2000)});
+    c.on('close',()=>{tt(lang==='lo'?'ການເຊື່ອມຕໍ່ຫຼົວ!':lang==='zh'?'连接断开!':'Lost!');setTimeout(()=>location.reload(),2000)});
     setInterval(()=>{if(c.open)c.send({type:'ping'})},25000);
     document.getElementById('lb').style.display='none';
     document.getElementById('ga').classList.add('show');
     tt(L[lang].connOk);
   });
   c.on('error',()=>tt(L[lang].connFail));
-  setTimeout(()=>{if(!c.open)tt('Timeout')},10000);
 }
 
 function hm(d){
@@ -249,15 +240,15 @@ function pa(pid,a,d){
     const c=players[pi].hand[d.ci];
     if(!c)return;
     if(lp){
-      if(c.suit!==lp.suit&&players[pi].hand.some(x=>x.suit===lp.suit)){tt('Must play same suit');return}
-      if(c.suit===lp.suit&&c.value<=lp.value){tt('Must play higher');return}
+      if(c.suit!==lp.suit&&players[pi].hand.some(x=>x.suit===lp.suit)){tt(lang==='lo'?'ຕ້ອງຫຼິ້ນຊຸດດຽວກັນ':lang==='zh'?'必须出同花色':'Same suit');return}
+      if(c.suit===lp.suit&&c.value<=lp.value){tt(lang==='lo'?'ຕ້ອງຫຼິ້ນໃຫຍ່ກວ່າ':lang==='zh'?'必须更大':'Bigger');return}
     }
     players[pi].hand.splice(d.ci,1);
     lp=c;lpi=pi;rh2.push({pi,c});
     if(players[pi].hand.length===0){er(pi);return}
     nt();
   }else if(a==='pass'){
-    if(!rh2.length){tt('Must play');return}
+    if(!rh2.length){tt(lang==='lo'?'ຕ້ອງຫຼິ້ນ':lang==='zh'?'必须出牌':'Must play');return}
     er(lpi);
   }
   bc();
@@ -319,13 +310,13 @@ function ub(){
   document.getElementById('bps').style.display=mt&&rh2.length>0?'inline-block':'none';
 }
 
-function pc(){if(sc<0)return tt('Select card');pa(myId,'play',{ci:sc});sc=-1}
+function pc(){if(sc<0)return tt(lang==='lo'?'ເລືອກບັດກ່ອນ':lang==='zh'?'请选牌':'Select');pa(myId,'play',{ci:sc});sc=-1}
 function ps(){pa(myId,'pass',{})}
 
 function tt(m){const e=document.getElementById('ts');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}
 function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 function sc2(h){return h.sort((a,b)=>a.suit!==b.suit?a.suitOrder-b.suitOrder:a.value-b.value)}
-function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').textContent).then(()=>tt('Copied!'))}
+function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').textContent).then(()=>tt(L[lang].copy))}
 
 document.getElementById('mn').value='P'+Math.floor(Math.random()*1000);
 document.getElementById('jn').value=document.getElementById('mn').value;
@@ -333,3 +324,4 @@ ip();setLang(lang);
 </script>
 </body>
 </html>
+
