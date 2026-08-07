@@ -2,12 +2,12 @@
 <html lang="lo">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>🃏 Cát Tệ - P2P</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1a4e);min-height:100vh}
+body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1a4e);min-height:100vh;-webkit-user-select:none;user-select:none}
 .c{max-width:800px;margin:0 auto;padding:10px}
 .h{text-align:center;padding:15px 0}.h h1{color:#ffd700;font-size:24px}.h p{color:#888;font-size:11px}
 .lang-bar{display:flex;justify-content:center;gap:10px;margin-bottom:15px}
@@ -50,6 +50,7 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 .rb{background:linear-gradient(135deg,#1a237e,#283593);border-radius:20px;padding:40px;text-align:center}
 .cs2{position:fixed;bottom:10px;right:10px;padding:5px 10px;border-radius:5px;font-size:10px;color:#fff}
 .cs2.ok{background:#4caf50}.cs2.err{background:#f44336}.cs2.wait{background:#ff9800}
+.timer-info{color:#ff9800;font-size:11px;margin-top:5px}
 </style>
 </head>
 <body>
@@ -65,19 +66,20 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 <div class="p" id="cp"><h2 id="h_create">🎮 ສ້າງຫ້ອງ</h2>
 <div class="ig"><label id="l_name">ຊື່ຫຼິ້ນ</label><input type="text" id="mn" value=""></div>
 <button class="b bg bf" onclick="cr()" id="btn_create">ສ້າງຫ້ອງ</button></div>
-<div class="p" id="wp" style="display:none"><h2 id="h_wait">⏳ ກຳລັງລໍຖ້າ</h2>
+<div class="p" id="wp" style="display:none"><h2 id="h_wait">⏳ ລໍຖ້າໝູ່...</h2>
 <div class="rib"><div style="color:#888;font-size:12px" id="l_share">ສົ່ງລະຫັດນີ້ໃຫ້ໝູ່</div>
 <div class="id" id="rid">-</div>
 <button class="b" style="background:rgba(0,255,136,.2);color:#00ff88;border:1px solid #00ff88;padding:6px 20px;border-radius:15px;font-size:12px" onclick="cp2()" id="btn_copy">📋 ຄັດລອກ</button>
-<div style="color:#ff9800;font-size:11px;margin-top:8px" id="l_warn">⚠️ ຢ່າປິດໜ້າຈໍ!</div></div>
+<div class="timer-info" id="timer_info">Room active: waiting for friend...</div></div>
 <div style="color:#fff;font-size:13px;margin:10px 0"><span id="l_online">ອອນລາຍ</span>: <span id="oc">1</span></div>
 <div id="wp2"></div>
 <button class="b bgr bf" id="bs" onclick="sg()" disabled id="btn_start">ເລີ່ມຫຼິ້ນ (ຕ້ອງການ 2 ຄົນ)</button></div>
 <div class="p"><h2 id="h_join">🔗 ເຂົ້າຫ້ອງ</h2>
 <div class="ig"><label id="l_name2">ຊື່ຫຼິ້ນ</label><input type="text" id="jn" value=""></div>
-<div class="ig"><label id="l_rid">ລະຫັດຫ້ອງ</label><input type="text" id="jrid" placeholder="ລະຫັດ 4 ຕົວເລກ"></div>
+<div class="ig"><label id="l_rid">ລະຫັດຫ້ອງ 4 ຕົວເລກ</label><input type="text" id="jrid" placeholder="ຕົວເລກ 4 ຕົວ" maxlength="4" inputmode="numeric"></div>
 <button class="b bgr bf" onclick="jr()" id="btn_join">ເຂົ້າຫ້ອງ</button>
-<div style="color:#ff9800;font-size:11px;margin-top:10px;text-align:center" id="l_warn2">⚠️ ຢ່າປິດຫຼັງເຂົ້າຫ້ອງ!</div></div>
+<div style="color:#00ff88;font-size:11px;margin-top:10px;text-align:center" id="l_hint">💡 ແອດຫຼາຍສາມາດຫຼິ້ນດ້ວຍກັນໄດ້</div>
+<div style="color:#ff9800;font-size:11px;margin-top:5px;text-align:center" id="l_warn2">⚠️ ຢ່າປິດຫຼັງເຂົ້າຫ້ອງ!</div></div>
 </div>
 <div id="ga" class="ga">
 <div class="sb"><span id="l_round">ລາຍການ</span>: <span class="hl" id="ri">1/6</span> | <span id="l_turn">ຕອນນີ້</span>: <span class="hl" id="ti">-</span></div>
@@ -90,17 +92,18 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 <div class="as"><button class="b bgr" id="bp" onclick="pc()" style="display:none">ຫຼິ້ນ</button>
 <button class="b bg" id="bps" onclick="ps()" style="display:none">ຜ່ານ</button>
 <button class="b bg" id="bn" onclick="nr()" style="display:none">ລາຍການຕໍ່</button>
-<button class="b br" onclick="location.reload()">ອອກ</button></div>
+<button class="b br" onclick="exit()">ອອກ</button></div>
 </div>
 <div class="ts" id="ts"></div>
 <div class="rs" id="rsp"><div class="rb"><h2 id="rt" style="color:#ffd700;font-size:32px;margin-bottom:15px"></h2>
 <p id="ri2" style="color:#fff;margin-bottom:25px"></p>
 <button class="b bg" onclick="location.reload()" id="btn_again">ຫຼິ້ນອີກຄັ້ງ</button></div></div>
+
 <script>
 const L={
-lo:{title:'🃏 ຊາເຈົ້າ',subtitle:'ຫຼິ້ນອອນລາຍ P2P',conn:'ກຳລັງເຊື່ອມຕໍ່...',connOk:'✓ ເຊື່ອມຕໍ່ແລ້ວ',connFail:'✗ ເຊື່ອມຕໍ່ລົ້ມເຫຼວ',hCreate:'🎮 ສ້າງຫ້ອງ',hWait:'⏳ ກຳລັງລໍຖ້າ',hJoin:'🔗 ເຂົ້າຫ້ອງ',name:'ຊື່ຫຼິ້ນ',share:'ສົ່ງລະຫັດນີ້ໃຫ້ໝູ່',copy:'📋 ຄັດລອກ',online:'ອອນລາຍ',rid:'ລະຫັດຫ້ອງ',join:'ເຂົ້າຫ້ອງ',round:'ລາຍການ',turn:'ຕອນນີ້',play:'ກຳລັງຫຼິ້ນ',wait:'ລໍຖ້າ...',hand:'ບັດຂອງທ່ານ',start:'ເລີ່ມຫຼິ້ນ (ຕ້ອງການ 2 ຄົນ)',warn:'⚠️ ຢ່າປິດໜ້າຈໍ!',warn2:'⚠️ ຢ່າປິດຫຼັງເຂົ້າຫ້ອງ!',again:'ຫຼິ້ນອີກຄັ້ງ'},
-zh:{title:'🃏 萨切',subtitle:'P2P在线游戏',conn:'连接中...',connOk:'✓ 已连接',connFail:'✗ 连接失败',hCreate:'🎮 创建房间',hWait:'⏳ 等待中',hJoin:'🔗 加入房间',name:'你的昵称',share:'把ID发给朋友',copy:'📋 复制',online:'在线',rid:'房间ID',join:'加入',round:'轮次',turn:'当前',play:'当前出牌',wait:'等待中...',hand:'你的手牌',start:'开始（需要2人）',warn:'⚠️ 保持页面打开！',warn2:'⚠️ 不要关闭页面！',again:'再来一局'},
-en:{title:'🃏 Cat Te',subtitle:'P2P Online Game',conn:'Connecting...',connOk:'✓ Connected',connFail:'✗ Error',hCreate:'🎮 Create Room',hWait:'⏳ Waiting',hJoin:'🔗 Join Room',name:'Your Name',share:'Share ID to friend',copy:'📋 Copy',online:'Online',rid:'Room ID',join:'Join',round:'Round',turn:'Turn',play:'Playing',wait:'Waiting...',hand:'Your Cards',start:'Start (Need 2)',warn:'⚠️ Keep page open!',warn2:'⚠️ Don\'t close!',again:'Play Again'}
+lo:{title:'🃏 ຊາເຈົ້າ',subtitle:'ຫຼິ້ນອອນລາຍ P2P',conn:'ກຳລັງເຊື່ອມຕໍ່...',connOk:'✓ ເຊື່ອມຕໍ່ແລ້ວ',connFail:'✗ ເຊື່ອມຕໍ່ລົ້ມເຫຼວ',hCreate:'🎮 ສ້າງຫ້ອງ',hWait:'⏳ ລໍຖ້າໝູ່...',hJoin:'🔗 ເຂົ້າຫ້ອງ',name:'ຊື່ຫຼິ້ນ',share:'ສົ່ງລະຫັດນີ້ໃຫ້ໝູ່',copy:'📋 ຄັດລອກ',online:'ອອນລາຍ',rid:'ລະຫັດຫ້ອງ 4 ຕົວເລກ',join:'ເຂົ້າຫ້ອງ',round:'ລາຍການ',turn:'ຕອນນີ້',play:'ກຳລັງຫຼິ້ນ',wait:'ລໍຖ້າ...',hand:'ບັດຂອງທ່ານ',start:'ເລີ່ມຫຼິ້ນ (ຕ້ອງການ 2 ຄົນ)',warn:'⚠️ ຢ່າປິດໜ້າຈໍ!',warn2:'⚠️ ຢ່າປິດຫຼັງເຂົ້າຫ້ອງ!',again:'ຫຼິ້ນອີກຄັ້ງ',waiting:'ຫ້ອງກຳລັງລໍຖ້າ...'},
+zh:{title:'🃏 萨切',subtitle:'P2P在线游戏',conn:'连接中...',connOk:'✓ 已连接',connFail:'✗ 连接失败',hCreate:'🎮 创建房间',hWait:'⏳ 等待朋友加入...',hJoin:'🔗 加入房间',name:'你的昵称',share:'把ID发给朋友',copy:'📋 复制',online:'在线',rid:'房间ID 4位数字',join:'加入',round:'轮次',turn:'当前',play:'当前出牌',wait:'等待中...',hand:'你的手牌',start:'开始（需要2人）',warn:'⚠️ 保持页面打开！',warn2:'⚠️ 不要关闭页面！',again:'再来一局',waiting:'房间正在等待...'},
+en:{title:'🃏 Cat Te',subtitle:'P2P Online Game',conn:'Connecting...',connOk:'✓ Connected',connFail:'✗ Error',hCreate:'🎮 Create Room',hWait:'⏳ Waiting for friend...',hJoin:'🔗 Join Room',name:'Your Name',share:'Share ID to friend',copy:'📋 Copy',online:'Online',rid:'Room ID 4-digit',join:'Join',round:'Round',turn:'Turn',play:'Playing',wait:'Waiting...',hand:'Your Cards',start:'Start (Need 2)',warn:'⚠️ Keep page open!',warn2:'⚠️ Don\'t close!',again:'Play Again',waiting:'Room is waiting...'}
 };
 let lang=localStorage.getItem('cl')||'lo';
 function setLang(l){
@@ -110,7 +113,7 @@ function setLang(l){
   const m=L[l];
   document.getElementById('title').textContent=m.title;
   document.getElementById('subtitle').textContent=m.subtitle;
-  document.getElementById('cs2').textContent=m.conn;
+  document.getElementById('cs2').textContent=myId?m.connOk:m.conn;
   document.getElementById('h_create').textContent=m.hCreate;
   document.getElementById('h_wait').textContent=m.hWait;
   document.getElementById('h_join').textContent=m.hJoin;
@@ -138,43 +141,96 @@ const SU=['spade','club','diamond','heart'],SS={spade:'♠',club:'♣',diamond:'
 const RK=['2','3','4','5','6','7','8','9','10','J','Q','K','A'],RV={};RK.forEach((r,i)=>RV[r]=i+2);
 
 function ip(){
-  peer=new Peer({config:{iceServers:[{urls:'stun:stun.l.google.com:19302'}]}});
-  peer.on('open',id=>{
-    myId=id;
-    document.getElementById('cs2').className='cs2 ok';
-    document.getElementById('cs2').textContent=L[lang].connOk;
-    setInterval(()=>{if(peer&&peer.socket)peer.socket.send({type:'ping'})},25000);
-  });
-  peer.on('connection',c=>hi(c));
-  peer.on('disconnected',()=>{if(peer)peer.reconnect()});
-  peer.on('error',e=>{
-    document.getElementById('cs2').className='cs2 err';
-    document.getElementById('cs2').textContent=L[lang].connFail;
-  });
+  try{
+    peer=new Peer(undefined,{config:{iceServers:[{urls:'stun:stun.l.google.com:19302'}]},reconnect:5,debug:0});
+    
+    // Keep alive ping
+    const pingI=setInterval(()=>{try{if(peer&&peer.socket&&peer.socket._ws&&peer.socket._ws.readyState===1)peer.socket._ws.send(JSON.stringify({type:'ping'}))}catch(e){}},30000);
+    
+    peer.on('open',id=>{
+      myId=id;
+      document.getElementById('cs2').className='cs2 ok';
+      document.getElementById('cs2').textContent=L[lang].connOk;
+      console.log('Connected with ID:',id);
+      uw();
+    });
+    peer.on('connection',c=>hi(c));
+    peer.on('disconnected',()=>{
+      console.log('Disconnected, reconnecting...');
+      document.getElementById('cs2').className='cs2 wait';
+      document.getElementById('cs2').textContent='Reconnecting...';
+      try{peer.reconnect()}catch(e){}
+    });
+    peer.on('error',e=>{
+      console.error('Error:',e);
+      document.getElementById('cs2').className='cs2 err';
+      document.getElementById('cs2').textContent=L[lang].connFail;
+      // Auto reconnect after error
+      setTimeout(()=>{try{peer.reconnect()}catch(e){}},3000);
+    });
+  }catch(e){
+    console.error('Init error:',e);
+    setTimeout(ip,2000);
+  }
 }
 
 function cr(){
   const n=document.getElementById('mn').value.trim();
-  if(!n){alert(lang==='lo'?'ກະລຸນາໃສ່ຊື່':lang==='zh'?'请输入名字':'Enter name');return}
-  if(!myId){alert(lang==='lo'?'ຍັງບໍ່ເຊື່ອມຕໍ່':lang==='zh'?'未连接':'Not connected');return}
+  if(!n){alert('ກະລຸນາໃສ່ຊື່');return}
+  if(!myId){alert('ກຳລັງເຊື່ອມຕໍ່...');return}
+  
   isHost=true;rh=myId;mi=0;
   players=[{id:myId,name:n,conn:null,hand:[],tungs:0,eliminated:false}];
+  
   document.getElementById('cp').style.display='none';
   document.getElementById('wp').style.display='block';
-  document.getElementById('rid').textContent=String(Math.floor(1000+Math.random()*9000));
+  
+  // Generate random 4-digit code
+  const code=String(Math.floor(1000+Math.random()*9000));
+  document.getElementById('rid').textContent=code;
+  
+  // Show timer
+  document.getElementById('timer_info').textContent=L[lang].waiting;
+  
   uw();
+  tt(L[lang].connOk);
 }
 
 function hi(c){
   c.on('open',()=>{
-    if(!isHost)return;
+    console.log('Player connected:',c.peer);
+    
     c.on('data',d=>{
+      console.log('Data:',d.type);
+      
       if(d.type==='join'){
         players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});
-        bc();uw();tt(d.name+(lang==='lo'?' ເຂົ້າຮ່ວມ':lang==='zh'?' 加入了':' joined'));
+        bc();
+        uw();
+        tt(d.name+(lang==='lo'?' ເຂົ້າຮ່ວມ!':lang==='zh'?' 加入了!':' joined!'));
       }
-      if(d.type==='act')pa(c.peer,d.a,d.d);
+      
+      if(d.type==='act'){
+        pa(c.peer,d.a,d.d);
+      }
+      
+      if(d.type==='ping'){
+        try{c.send({type:'pong'})}catch(e){}
+      }
     });
+    
+    c.on('close',()=>{
+      console.log('Player disconnected:',c.peer);
+      // Remove disconnected player
+      const pi=players.findIndex(p=>p.id===c.peer);
+      if(pi!==-1){
+        players.splice(pi,1);
+        uw();
+        tt(lang==='lo'?'ໝູ່ອອກຈາກຫ້ອງ':lang==='zh'?'玩家断开':'Player left');
+      }
+    });
+    
+    c.on('error',e=>console.error('Connection error:',e));
   });
 }
 
@@ -185,29 +241,53 @@ function uw(){
 }
 
 function jr(){
-  const n=document.getElementById('jn').value.trim(),id=document.getElementById('jrid').value.trim();
-  if(!n||!id){alert(lang==='lo'?'ກະລຸນາກອກຂໍ້ມູນ':lang==='zh'?'请填写完整':'Fill all');return}
+  const n=document.getElementById('jn').value.trim();
+  const id=document.getElementById('jrid').value.trim();
+  
+  if(!n){alert(lang==='lo'?'ກະລຸນາໃສ່ຊື່':lang==='zh'?'请输入名字':'Enter name');return}
+  if(!id||id.length!==4){alert(lang==='lo'?'ກະລຸນາໃສ່ລະຫັດ 4 ຕົວ':lang==='zh'?'请输入4位数字':'Enter 4-digit code');return}
+  
   tt(lang==='lo'?'ກຳລັງເຊື່ອມຕໍ່...':lang==='zh'?'连接中...':'Connecting...');
-  const c=peer.connect(id,{reliable:true});
+  
+  const c=peer.connect(id,{reliable:true,metadata:{name:n}});
+  
   c.on('open',()=>{
-    isHost=false;rh=id;
+    console.log('Connected to host:',id);
+    isHost=false;
+    rh=id;
+    
     c.send({type:'join',name:n});
+    
     c.on('data',d=>{
       if(d.type==='act')pa(c.peer,d.a,d.d);
       if(d.type==='gs')hm(d);
+      if(d.type==='ping')try{c.send({type:'pong'})}catch(e){}
     });
-    c.on('close',()=>{tt(lang==='lo'?'ການເຊື່ອມຕໍ່ຫຼົວ!':lang==='zh'?'连接断开!':'Lost!');setTimeout(()=>location.reload(),2000)});
-    setInterval(()=>{if(c.open)c.send({type:'ping'})},25000);
+    
+    c.on('close',()=>{
+      tt(lang==='lo'?'ການເຊື່ອມຕໍ່ຫຼົວ!':lang==='zh'?'连接断开!':'Connection lost!');
+      setTimeout(()=>location.reload(),2000);
+    });
+    
     document.getElementById('lb').style.display='none';
     document.getElementById('ga').classList.add('show');
     tt(L[lang].connOk);
   });
-  c.on('error',()=>tt(L[lang].connFail));
+  
+  c.on('error',e=>{
+    console.error('Connect error:',e);
+    tt(L[lang].connFail);
+  });
 }
 
 function hm(d){
   if(d.type==='gs'){
-    mi=d.po.indexOf(myId);cr2=d.cr;cci=d.ci;lp=d.lp;lpi=d.lpi;rh2=d.rh||[];
+    mi=d.po.indexOf(myId);
+    cr2=d.cr;
+    cci=d.ci;
+    lp=d.lp;
+    lpi=d.lpi;
+    rh2=d.rh||[];
     players=d.ps.map(p=>{const ex=players.find(e=>e.id===p.id);return{...p,conn:ex?.conn||null}});
     ug();
   }
@@ -215,9 +295,11 @@ function hm(d){
 
 function sg(){
   if(!isHost||players.length<2)return;
+  
   let dk=[];
   for(const s of SU)for(const r of RK)dk.push({suit:s,rank:r,value:RV[r],suitOrder:SO[s]});
   sh(dk);
+  
   players.forEach(p=>{p.hand=sc2(dk.splice(0,6));p.tungs=0;p.eliminated=false});
   cr2=0;cci=0;lp=null;lpi=-1;rh2=[];
   bc();
@@ -225,36 +307,68 @@ function sg(){
 
 function bc(){
   if(!isHost)return;
-  const s={type:'gs',st:'play',po:players.map(p=>p.id),cr:cr2,cci:cci,lp:lp,lpi:lpi,rh:rh2,ps:players.map(p=>({id:p.id,name:p.name,hc:p.hand.length,h:p.hand,tungs:p.tungs,eliminated:p.eliminated}))};
+  
+  const s={
+    type:'gs',st:'play',
+    po:players.map(p=>p.id),
+    cr:cr2,cci:cci,lp:lp,lpi:lpi,rh:rh2,
+    ps:players.map(p=>({id:p.id,name:p.name,hc:p.hand.length,h:p.hand,tungs:p.tungs,eliminated:p.eliminated}))
+  };
+  
   players.forEach(p=>{
     if(p.conn&&p.conn.open){
       p.conn.send({...s,ps:s.ps.map(sp=>({...sp,h:sp.id===p.id?sp.h:sp.h.map(()=>null)}))});
-    }else if(p.id===myId)hm(s);
+    }else if(p.id===myId){
+      hm(s);
+    }
   });
 }
 
 function pa(pid,a,d){
   const pi=players.findIndex(p=>p.id===pid);
   if(pi!==cci)return;
+  
   if(a==='play'){
     const c=players[pi].hand[d.ci];
     if(!c)return;
+    
     if(lp){
-      if(c.suit!==lp.suit&&players[pi].hand.some(x=>x.suit===lp.suit)){tt(lang==='lo'?'ຕ້ອງຫຼິ້ນຊຸດດຽວກັນ':lang==='zh'?'必须出同花色':'Same suit');return}
-      if(c.suit===lp.suit&&c.value<=lp.value){tt(lang==='lo'?'ຕ້ອງຫຼິ້ນໃຫຍ່ກວ່າ':lang==='zh'?'必须更大':'Bigger');return}
+      if(c.suit!==lp.suit&&players[pi].hand.some(x=>x.suit===lp.suit)){
+        tt(lang==='lo'?'ຕ້ອງຫຼິ້ນຊຸດດຽວກັນ':lang==='zh'?'必须出同花色':'Same suit');
+        return;
+      }
+      if(c.suit===lp.suit&&c.value<=lp.value){
+        tt(lang==='lo'?'ຕ້ອງຫຼິ້ນໃຫຍ່ກວ່າ':lang==='zh'?'必须更大':'Bigger');
+        return;
+      }
     }
+    
     players[pi].hand.splice(d.ci,1);
-    lp=c;lpi=pi;rh2.push({pi,c});
-    if(players[pi].hand.length===0){er(pi);return}
+    lp=c;
+    lpi=pi;
+    rh2.push({pi,c});
+    
+    if(players[pi].hand.length===0){
+      er(pi);
+      return;
+    }
     nt();
+    
   }else if(a==='pass'){
-    if(!rh2.length){tt(lang==='lo'?'ຕ້ອງຫຼິ້ນ':lang==='zh'?'必须出牌':'Must play');return}
+    if(!rh2.length){
+      tt(lang==='lo'?'ຕ້ອງຫຼິ້ນ':lang==='zh'?'必须出牌':'Must play');
+      return;
+    }
     er(lpi);
   }
+  
   bc();
 }
 
-function er(wi){players[wi].tungs++;bc({rw:wi})}
+function er(wi){
+  players[wi].tungs++;
+  bc({rw:wi});
+}
 
 function nt(){
   let n=cci;
@@ -265,11 +379,16 @@ function nt(){
 function nr(){
   document.getElementById('bn').style.display='none';
   cr2++;
+  
   if(cr2>=6){
     let w=0,mt=-1;
-    players.forEach((p,i)=>{if(!p.eliminated&&p.tungs>mt){mt=p.tungs;w=i}});
-    bc({st:'go',w});return;
+    players.forEach((p,i)=>{
+      if(!p.eliminated&&p.tungs>mt){mt=p.tungs;w=i}
+    });
+    bc({st:'go',w});
+    return;
   }
+  
   lp=null;lpi=-1;rh2=[];cci=0;
   bc();
 }
@@ -288,6 +407,7 @@ function rs(){
 function rc(){
   const c=document.getElementById('cc'),b=document.getElementById('cb');
   if(!lp){c.innerHTML='<span style="color:#444;font-size:12px">'+L[lang].wait+'</span>';b.textContent='';return}
+  
   c.innerHTML='<div class="cd '+(lp.suit==='heart'||lp.suit==='diamond'?'r':'k')+'" style="cursor:default"><div class="cn t"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div><div class="cc">'+SS[lp.suit]+'</div><div class="cn b"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div></div>';
   b.textContent=(players[lpi]?.name||'');
 }
@@ -295,33 +415,17 @@ function rc(){
 function rh3(){
   const me=players.find(p=>p.id===myId);
   if(!me||!me.h)return;
+  
   document.getElementById('mc').textContent='('+me.h.length+')';
   document.getElementById('mh').innerHTML=me.h.map((c,i)=>{
     if(!c)return'';
-    return'<div class="cd '+(c.suit==='heart'||c.suit==='diamond'?'r':'k')+' '+(sc===i?'sel':'')+'" onclick="sc2('+i+')"><div class="cn t"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div><div class="cc">'+SS[c.suit]+'</div><div class="cn b"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div></div>';
+    return'<div class="cd '+(c.suit==='heart'||c.suit==='diamond'?'r':'k')+' '+(sc===i?'sel':'')+'" onclick="sel('+i+')"><div class="cn t"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div><div class="cc">'+SS[c.suit]+'</div><div class="cn b"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div></div>';
   }).join('');
 }
 
-function sc2(i){if(cci!==mi)return;sc=sc===i?-1:i;rh3()}
+function sel(i){if(cci!==mi)return;sc=sc===i?-1:i;rh3()}
 
 function ub(){
   const mt=cci===mi;
   document.getElementById('bp').style.display=mt?'inline-block':'none';
-  document.getElementById('bps').style.display=mt&&rh2.length>0?'inline-block':'none';
-}
-
-function pc(){if(sc<0)return tt(lang==='lo'?'ເລືອກບັດກ່ອນ':lang==='zh'?'请选牌':'Select');pa(myId,'play',{ci:sc});sc=-1}
-function ps(){pa(myId,'pass',{})}
-
-function tt(m){const e=document.getElementById('ts');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}
-function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
-function sc2(h){return h.sort((a,b)=>a.suit!==b.suit?a.suitOrder-b.suitOrder:a.value-b.value)}
-function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').textContent).then(()=>tt(L[lang].copy))}
-
-document.getElementById('mn').value='P'+Math.floor(Math.random()*1000);
-document.getElementById('jn').value=document.getElementById('mn').value;
-ip();setLang(lang);
-</script>
-</body>
-</html>
-
+  document.getElementById('bps').style.display=mt&&rh2.length>0?'inline-block':'n
