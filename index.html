@@ -91,29 +91,171 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 let peer=null,myId=null,isHost=false,players=[],mi=-1,cr2=0,cci=0,lp=null,lpi=-1,rh2=[],sc=-1,gameStarted=false,hostConn=null;
 const SU=['spade','club','diamond','heart'],SS={spade:'♠',club:'♣',diamond:'♦',heart:'♥'},SO={spade:0,club:1,diamond:2,heart:3};
 const RK=['2','3','4','5','6','7','8','9','10','J','Q','K','A'],RV={};RK.forEach((r,i)=>RV[r]=i+2);
-function initPeer(code,isCreator){return new Promise((resolve,reject)=>{const peerId=isCreator?'room_'+code:'joiner_'+Date.now();const p=new Peer(peerId,{config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}});p.on('open',id=>{document.getElementById('cs2').className='cs2 ok';document.getElementById('cs2').textContent='✓ Ready';resolve(p)});p.on('error',e=>{if(e.type==='unavailable-id'&&isCreator){reject('Room exists')}else{reject(e.type)}})})}
-async function cr(){const n=document.getElementById('mn').value.trim();if(!n){alert('Enter name');return}const code=String(Math.floor(1000+Math.random()*9000));try{peer=await initPeer(code,true);isHost=true;mi=0;gameStarted=false;myId=code;players=[{id:code,name:n,conn:null,hand:[],tungs:0,eliminated:false}];peer.on('connection',c=>{c.on('open',()=>{c.on('data',d=>{if(d.type==='join'&&isHost){if(gameStarted){c.send({type:'reject',reason:'Game in progress'});return}if(players.length>=2){c.send({type:'reject',reason:'Room full'});return}players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});uw();tt(d.name+' joined!');if(players.length>=2){document.getElementById('btnStart').style.display='inline-block'}}if(d.type==='play'&&isHost){handlePlay(c.peer,d.ci)}if(d.type==='pass'&&isHost){handlePass()}});c.on('close',()=>{players=players.filter(p=>p.id!==c.peer);uw()})})});document.getElementById('cp').style.display='none';document.getElementById('wp').style.display='block';document.getElementById('rid').textContent=code;uw()}catch(e){tt('Error: '+e)}}
-async function jr(){const n=document.getElementById('jn').value.trim();const code=document.getElementById('jrid').value.trim();if(!n||!code||code.length!==4){alert('Enter name and 4-digit code');return}try{peer=await initPeer(code,false);isHost=false;const c=peer.connect('room_'+code,{reliable:true});hostConn=c;c.on('open',()=>{c.send({type:'join',name:n});c.on('data',d=>{if(d.type==='reject'){tt('❌ '+d.reason);return}if(d.type==='gameStart'){receiveGameState(d.state)}});c.on('close',()=>{tt('Disconnected');setTimeout(()=>location.reload(),2000)});tt('Connected!')});c.on('error',e=>{tt('Room not found')})}catch(e){tt('Error: '+e)}}
-function startGame(){if(!isHost||players.length<2||gameStarted)return;gameStarted=true;let dk=[];for(const s of SU)for(const r of RK)dk.push({suit:s,rank:r,value:RV[r]});shuffle(dk);players[0].hand=sortCards(dk.splice(0,6));players[1].hand=sortCards(dk.splice(0,6));players[0].tungs=0;players[0].eliminated=false;players[1].tungs=0;players[1].eliminated=false;cr2=0;cci=0;lp=null;lpi=-1;rh2=[];mi=0;sc=-1;document.getElementById('lb').style.display='none';document.getElementById('ga').classList.add('show');sendGameState();updateHostUI()}
-function sendGameState(){if(!isHost||players.length<2)return;const state={cr:cr2,cci:cci,lp:lp,lpi:lpi,rh:rh2,p0name:players[0].name,p1name:players[1].name,p0hand:players[0].hand,p1hand:players[1].hand,p0hc:players[0].hand.length,p1hc:players[1].hand.length,p0t:players[0].tungs,p1t:players[1].tungs,p0e:players[0].eliminated,p1e:players[1].eliminated};if(players[1].conn&&players[1].conn.open){players[1].conn.send({type:'gameStart',state:{...state,p0hand:Array(players[0].hand.length).fill(null)}})}}
-function receiveGameState(s){cr2=s.cr;cci=s.cci;lp=s.lp;lpi=s.lpi;rh2=s.rh||[];mi=1;players=[{id:'p0',name:s.p0name,hand:s.p0hand||[],tungs:s.p0t,eliminated:s.p0e,hc:s.p0hc},{id:'p1',name:s.p1name,hand:s.p1hand||[],tungs:s.p1t,eliminated:s.p1e,hc:s.p1hc}];document.getElementById('lb').style.display='none';document.getElementById('ga').classList.add('show');updateClientUI()}
-function updateHostUI(){document.getElementById('sa').innerHTML=players.map((p,i)=>'<div class="st '+(i===cci?'a':'')+(i===0?' m':'')+'"><div class="n">'+p.name+'</div><div style="display:flex;justify-content:center;margin-top:5px">'+Array(p.hand.length).fill('<div class="cd bk mini"></div>').join('')+'</div><div style="color:#888;font-size:10px">Tủng: '+p.tungs+'</div></div>').join('');document.getElementById('ri').textContent=(cr2+1)+'/6';document.getElementById('ti').textContent=players[cci]?.name||'-';const cc=document.getElementById('cc'),cb=document.getElementById('cb');if(!lp){cc.innerHTML='<span style="color:#444">'+(cci===0?'Your turn':'Waiting...')+'</span>';cb.textContent=''}else{cc.innerHTML='<div class="cd '+(lp.suit==='heart'||lp.suit==='diamond'?'r':'k')+'"><div class="cn t"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div><div class="cc">'+SS[lp.suit]+'</div><div class="cn b"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div></div>';cb.textContent=players[lpi]?.name||''}document.getElementById('mc').textContent='('+players[0].hand.length+')';document.getElementById('mh').innerHTML=players[0].hand.map((c,i)=>'<div class="cd '+(c.suit==='heart'||c.suit==='diamond'?'r':'k')+' '+(sc===i?'sel':'')+'" onclick="sel('+i+')"><div class="cn t"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div><div class="cc">'+SS[c.suit]+'</div><div class="cn b"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div></div>').join('');document.getElementById('btnPlay').style.display=(cci===0)?'inline-block':'none';document.getElementById('btnPass').style.display=(cci===0&&rh2.length>0)?'inline-block':'none'}
-function updateClientUI(){document.getElementById('sa').innerHTML=players.map((p,i)=>'<div class="st '+(i===cci?'a':'')+(i===1?' m':'')+'"><div class="n">'+p.name+'</div><div style="display:flex;justify-content:center;margin-top:5px">'+Array(p.hc||0).fill('<div class="cd bk mini"></div>').join('')+'</div><div style="color:#888;font-size:10px">Tủng: '+p.tungs+'</div></div>').join('');document.getElementById('ri').textContent=(cr2+1)+'/6';document.getElementById('ti').textContent=players[cci]?.name||'-';const cc=document.getElementById('cc'),cb=document.getElementById('cb');if(!lp){cc.innerHTML='<span style="color:#444">'+(cci===1?'Your turn':'Waiting...')+'</span>';cb.textContent=''}else{cc.innerHTML='<div class="cd '+(lp.suit==='heart'||lp.suit==='diamond'?'r':'k')+'"><div class="cn t"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div><div class="cc">'+SS[lp.suit]+'</div><div class="cn b"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div></div>';cb.textContent=players[lpi]?.name||''}document.getElementById('mc').textContent='('+players[1].hand.length+')';document.getElementById('mh').innerHTML=players[1].hand.map((c,i)=>'<div class="cd '+(c.suit==='heart'||c.suit==='diamond'?'r':'k')+' '+(sc===i?'sel':'')+'" onclick="sel('+i+')"><div class="cn t"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div><div class="cc">'+SS[c.suit]+'</div><div class="cn b"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div></div>').join('');document.getElementById('btnPlay').style.display=(cci===1)?'inline-block':'none';document.getElementById('btnPass').style.display=(cci===1&&rh2.length>0)?'inline-block':'none'}
-function pc(){if(sc<0){tt('Select card');return}const myIdx=isHost?0:1;if(cci!==myIdx){tt('Not your turn');return}if(isHost){const card=players[0].hand[sc];if(lp&&card.suit!==lp.suit&&players[0].hand.some(x=>x.suit===lp.suit)){tt('Same suit!');return}if(lp&&card.suit===lp.suit&&card.value<=lp.value){tt('Bigger!');return}players[0].hand.splice(sc,1);lp=card;lpi=0;rh2.push({pi:0,c:card});sc=-1;if(players[0].hand.length===0){endRound(0);return}cci=1;updateHostUI();sendGameState()}else{hostConn.send({type:'play',ci:sc});sc=-1;tt('Sent!')}}
-function ps(){const myIdx=isHost?0:1;if(cci!==myIdx){tt('Not your turn');return}if(isHost){if(!rh2.length){tt('Must play');return}endRound(lpi)}else{hostConn.send({type:'pass'})}}
-function handlePlay(pid,ci){const card=players[1].hand[ci];if(!card)return;if(lp&&card.suit!==lp.suit&&players[1].hand.some(x=>x.suit===lp.suit)){tt('Same suit!');return}if(lp&&card.suit===lp.suit&&card.value<=lp.value){tt('Bigger!');return}players[1].hand.splice(ci,1);lp=card;lpi=1;rh2.push({pi:1,c:card});if(players[1].hand.length===0){endRound(1);return}cci=0;updateHostUI();sendGameState()}
+
+function initPeer(code,isCreator){
+  return new Promise((resolve,reject)=>{
+    const peerId=isCreator?'room_'+code:'joiner_'+Date.now();
+    const p=new Peer(peerId,{config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}});
+    p.on('open',id=>{document.getElementById('cs2').className='cs2 ok';document.getElementById('cs2').textContent='✓ Ready';resolve(p)});
+    p.on('error',e=>{if(e.type==='unavailable-id'&&isCreator){reject('Room exists')}else{reject(e.type)}});
+  });
+}
+
+async function cr(){
+  const n=document.getElementById('mn').value.trim();if(!n){alert('Enter name');return}
+  const code=String(Math.floor(1000+Math.random()*9000));
+  try{
+    peer=await initPeer(code,true);isHost=true;mi=0;gameStarted=false;myId=code;
+    players=[{id:code,name:n,conn:null,hand:[],tungs:0,eliminated:false}];
+    peer.on('connection',c=>{c.on('open',()=>{c.on('data',d=>{if(d.type==='join'&&isHost){if(gameStarted){c.send({type:'reject',reason:'Game in progress'});return}if(players.length>=2){c.send({type:'reject',reason:'Room full'});return}players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});uw();tt(d.name+' joined!');if(players.length>=2){document.getElementById('btnStart').style.display='inline-block'}}if(d.type==='play'&&isHost){handlePlay(c.peer,d.ci)}if(d.type==='pass'&&isHost){handlePass()}});c.on('close',()=>{players=players.filter(p=>p.id!==c.peer);uw()})})});
+    document.getElementById('cp').style.display='none';document.getElementById('wp').style.display='block';document.getElementById('rid').textContent=code;uw();
+  }catch(e){tt('Error: '+e)}
+}
+
+async function jr(){
+  const n=document.getElementById('jn').value.trim();const code=document.getElementById('jrid').value.trim();
+  if(!n||!code||code.length!==4){alert('Enter name and 4-digit code');return}
+  try{
+    peer=await initPeer(code,false);isHost=false;
+    const c=peer.connect('room_'+code,{reliable:true});
+    hostConn=c;
+    c.on('open',()=>{c.send({type:'join',name:n});
+      c.on('data',d=>{if(d.type==='reject'){tt('❌ '+d.reason);return}if(d.type==='gameStart'){receiveGameState(d.state)}});
+      c.on('close',()=>{tt('Disconnected');setTimeout(()=>location.reload(),2000)});
+      tt('Connected! Waiting...');
+    });
+    c.on('error',e=>{tt('Room not found')});
+  }catch(e){tt('Error: '+e)}
+}
+
+function startGame(){
+  if(!isHost||players.length<2||gameStarted)return;gameStarted=true;
+  let dk=[];for(const s of SU)for(const r of RK)dk.push({suit:s,rank:r,value:RV[r]});shuffle(dk);
+  players[0].hand=sortCards(dk.splice(0,6));players[1].hand=sortCards(dk.splice(0,6));
+  players[0].tungs=0;players[0].eliminated=false;players[1].tungs=0;players[1].eliminated=false;
+  cr2=0;cci=0;lp=null;lpi=-1;rh2=[];mi=0;sc=-1;
+  document.getElementById('lb').style.display='none';document.getElementById('ga').classList.add('show');
+  sendGameState();updateHostUI();
+}
+
+function sendGameState(){
+  if(!isHost||players.length<2)return;
+  const state={cr:cr2,cci:cci,lp:lp,lpi:lpi,rh:rh2,p0name:players[0].name,p1name:players[1].name,p0hand:players[0].hand,p1hand:players[1].hand,p0hc:players[0].hand.length,p1hc:players[1].hand.length,p0t:players[0].tungs,p1t:players[1].tungs,p0e:players[0].eliminated,p1e:players[1].eliminated};
+  if(players[1].conn&&players[1].conn.open){players[1].conn.send({type:'gameStart',state:{...state,p0hand:Array(players[0].hand.length).fill(null)}})}
+}
+
+function receiveGameState(s){
+  cr2=s.cr;cci=s.cci;lp=s.lp;lpi=s.lpi;rh2=s.rh||[];mi=1;
+  players=[{id:'p0',name:s.p0name,hand:s.p0hand||[],tungs:s.p0t,eliminated:s.p0e,hc:s.p0hc},{id:'p1',name:s.p1name,hand:s.p1hand||[],tungs:s.p1t,eliminated:s.p1e,hc:s.p1hc}];
+  document.getElementById('lb').style.display='none';document.getElementById('ga').classList.add('show');updateClientUI();
+}
+
+function updateHostUI(){
+  document.getElementById('sa').innerHTML=players.map((p,i)=>'<div class="st '+(i===cci?'a':'')+(i===0?' m':'')+'"><div class="n">'+p.name+'</div><div style="display:flex;justify-content:center;margin-top:5px">'+Array(p.hand.length).fill('<div class="cd bk mini"></div>').join('')+'</div><div style="color:#888;font-size:10px">Tủng: '+p.tungs+'</div></div>').join('');
+  document.getElementById('ri').textContent=(cr2+1)+'/6';document.getElementById('ti').textContent=players[cci]?.name||'-';
+  const cc=document.getElementById('cc'),cb=document.getElementById('cb');
+  if(!lp){cc.innerHTML='<span style="color:#444">'+(cci===0?'Your turn':'Waiting...')+'</span>';cb.textContent=''}
+  else{cc.innerHTML='<div class="cd '+(lp.suit==='heart'||lp.suit==='diamond'?'r':'k')+'"><div class="cn t"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div><div class="cc">'+SS[lp.suit]+'</div><div class="cn b"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div></div>';cb.textContent=players[lpi]?.name||''}
+  document.getElementById('mc').textContent='('+players[0].hand.length+')';
+  document.getElementById('mh').innerHTML=players[0].hand.map((c,i)=>'<div class="cd '+(c.suit==='heart'||c.suit==='diamond'?'r':'k')+' '+(sc===i?'sel':'')+'" onclick="sel('+i+')"><div class="cn t"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div><div class="cc">'+SS[c.suit]+'</div><div class="cn b"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div></div>').join('');
+  document.getElementById('btnPlay').style.display=(cci===0)?'inline-block':'none';
+  document.getElementById('btnPass').style.display=(cci===0&&rh2.length>0)?'inline-block':'none';
+}
+
+function updateClientUI(){
+  document.getElementById('sa').innerHTML=players.map((p,i)=>'<div class="st '+(i===cci?'a':'')+(i===1?' m':'')+'"><div class="n">'+p.name+'</div><div style="display:flex;justify-content:center;margin-top:5px">'+Array(p.hc||0).fill('<div class="cd bk mini"></div>').join('')+'</div><div style="color:#888;font-size:10px">Tủng: '+p.tungs+'</div></div>').join('');
+  document.getElementById('ri').textContent=(cr2+1)+'/6';document.getElementById('ti').textContent=players[cci]?.name||'-';
+  const cc=document.getElementById('cc'),cb=document.getElementById('cb');
+  if(!lp){cc.innerHTML='<span style="color:#444">'+(cci===1?'Your turn':'Waiting...')+'</span>';cb.textContent=''}
+  else{cc.innerHTML='<div class="cd '+(lp.suit==='heart'||lp.suit==='diamond'?'r':'k')+'"><div class="cn t"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div><div class="cc">'+SS[lp.suit]+'</div><div class="cn b"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div></div>';cb.textContent=players[lpi]?.name||''}
+  document.getElementById('mc').textContent='('+players[1].hand.length+')';
+  document.getElementById('mh').innerHTML=players[1].hand.map((c,i)=>'<div class="cd '+(c.suit==='heart'||c.suit==='diamond'?'r':'k')+' '+(sc===i?'sel':'')+'" onclick="sel('+i+')"><div class="cn t"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div><div class="cc">'+SS[c.suit]+'</div><div class="cn b"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div></div>').join('');
+  document.getElementById('btnPlay').style.display=(cci===1)?'inline-block':'none';
+  document.getElementById('btnPass').style.display=(cci===1&&rh2.length>0)?'inline-block':'none';
+}
+
+function pc(){
+  if(sc<0){tt('Select card');return}
+  const myIdx=isHost?0:1;
+  if(cci!==myIdx){tt("Not your turn");return}
+  
+  if(isHost){
+    const card=players[0].hand[sc];
+    if(lp&&card.suit!==lp.suit&&players[0].hand.some(x=>x.suit===lp.suit)){tt('Same suit!');return}
+    if(lp&&card.suit===lp.suit&&card.value<=lp.value){tt('Bigger!');return}
+    players[0].hand.splice(sc,1);lp=card;lpi=0;rh2.push({pi:0,c:card});sc=-1;
+    if(players[0].hand.length===0){endRound(0);return}
+    cci=1;updateHostUI();sendGameState();
+  }else{
+    hostConn.send({type:'play',ci:sc});
+    sc=-1;
+    tt('Card sent!');
+  }
+}
+
+function ps(){
+  const myIdx=isHost?0:1;
+  if(cci!==myIdx){tt("Not your turn");return}
+  
+  if(isHost){
+    if(!rh2.length){tt('Must play');return}
+    endRound(lpi);
+  }else{
+    hostConn.send({type:'pass'});
+  }
+}
+
+function handlePlay(pid,ci){
+  const card=players[1].hand[ci];if(!card)return;
+  if(lp&&card.suit!==lp.suit&&players[1].hand.some(x=>x.suit===lp.suit)){tt('Same suit!');return}
+  if(lp&&card.suit===lp.suit&&card.value<=lp.value){tt('Bigger!');return}
+  players[1].hand.splice(ci,1);lp=card;lpi=1;rh2.push({pi:1,c:card});
+  if(players[1].hand.length===0){endRound(1);return}
+  cci=0;updateHostUI();sendGameState();
+}
+
 function handlePass(){if(!rh2.length){tt('Must play');return}endRound(lpi)}
-function endRound(w){players[w].tungs++;if(players[w].tungs>=3)players[w].eliminated=true;if(players.filter(p=>!p.eliminated).length<=1){showWinner();return}if(players.every(p=>p.hand.length===0)){cr2++;if(cr2>=6){showWinner();return}resetRound()}}
-function resetRound(){lp=null;lpi=-1;rh2=[];cci=0;sc=-1;let dk=[];for(const s of SU)for(const r of RK)dk.push({suit:s,rank:r,value:RV[r]});shuffle(dk);players[0].hand=sortCards(dk.splice(0,6));players[1].hand=sortCards(dk.splice(0,6));if(isHost){updateHostUI();sendGameState()}}
-function showWinner(){let w=players[0],mt=999;players.forEach(p=>{if(!p.eliminated&&p.tungs<mt){mt=p.tungs;w=p}});document.getElementById('rt').textContent='🏆 '+w.name;document.getElementById('rsp').classList.add('show')}
-function sel(i){const myIdx=isHost?0:1;if(cci!==myIdx)return;sc=sc===i?-1:i;if(isHost)updateHostUI();else updateClientUI()}
-function uw(){document.getElementById('oc').textContent=players.length;document.getElementById('wp2').innerHTML=players.slice(1).map(p=>'<div style="background:rgba(255,255,255,.1);padding:8px 12px;border-radius:8px;margin:5px 0;color:#fff">👤 '+p.name+'</div>').join('')}
+
+function endRound(w){
+  players[w].tungs++;if(players[w].tungs>=3)players[w].eliminated=true;
+  if(players.filter(p=>!p.eliminated).length<=1){showWinner();return}
+  if(players.every(p=>p.hand.length===0)){cr2++;if(cr2>=6){showWinner();return}resetRound(w)(w)()}
+}
+
+function resetRound(){
+  lp=null;lpi=-1;rh2=[];cci=0;sc=-1;
+  let dk=[];for(const s of SU)for(const r of RK)dk.push({suit:s,rank:r,value:RV[r]});shuffle(dk);
+  players[0].hand=sortCards(dk.splice(0,6));players[1].hand=sortCards(dk.splice(0,6));
+  if(isHost){updateHostUI();sendGameState()}
+}
+
+function showWinner(){
+  let w=players[0],mt=999;
+  players.forEach(p=>{if(!p.eliminated&&p.tungs<mt){mt=p.tungs;w=p}});
+  document.getElementById('rt').textContent='🏆 '+w.name;
+  document.getElementById('rsp').classList.add('show');
+}
+
+function sel(i){
+  const myIdx=isHost?0:1;
+  if(cci!==myIdx)return;
+  sc=sc===i?-1:i;
+  if(isHost)updateHostUI();else updateClientUI();
+}
+
+function uw(){
+  document.getElementById('oc').textContent=players.length;
+  document.getElementById('wp2').innerHTML=players.slice(1).map(p=>'<div style="background:rgba(255,255,255,.1);padding:8px 12px;border-radius:8px;margin:5px 0;color:#fff">👤 '+p.name+'</div>').join('');
+}
+
 function exit(){location.reload()}
 function tt(m){const e=document.getElementById('ts');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500)}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 function sortCards(h){return h.sort((a,b)=>a.suit!==b.suit?SO[a.suit]-SO[b.suit]:a.value-b.value)}
 function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').textContent).then(()=>tt('Copied!')).catch(()=>{prompt('Copy:',document.getElementById('rid').textContent)})}
-document.getElementById('mn').value='P'+Math.floor(Math.random()*100);document.getElementById('jn').value=document.getElementById('mn').value;
+
+document.getElementById('mn').value='P'+Math.floor(Math.random()*100);
+document.getElementById('jn').value=document.getElementById('mn').value;
 </script>
 </body>
 </html>
