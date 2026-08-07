@@ -40,70 +40,79 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 .cd .cn{display:flex;flex-direction:column;align-items:center;line-height:1}
 .cd .cn.t{align-self:flex-start}.cd .cn.b{align-self:flex-end;transform:rotate(180deg)}
 .as{display:flex;justify-content:center;gap:10px;margin-top:15px}
-.ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:1000}
-.ov.show{display:flex}
 .ts{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000;padding:15px 30px;border-radius:10px;font-size:16px;font-weight:bold;z-index:500;display:none}
 .ts.show{display:block}
 .rs{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:200}
 .rs.show{display:flex}
 .rb{background:linear-gradient(135deg,#1a237e,#283593);border-radius:20px;padding:40px;text-align:center}
 .cs2{position:fixed;bottom:10px;right:10px;padding:5px 10px;border-radius:5px;font-size:10px;color:#fff}
-.cs2.ok{background:#4caf50}.cs2.err{background:#f44336}
+.cs2.ok{background:#4caf50}.cs2.err{background:#f44336}.cs2.wait{background:#ff9800}
 </style>
 </head>
 <body>
 <div class="c">
-<div class="h"><h1>🃏 Cát Tệ</h1><p>P2P · ບໍ່ຕ້ອງການເຊີ່ງເວັບ</p></div>
-<div id="cs2" class="cs2 err">ກຳລັງເຊື່ອມຕໍ່...</div>
+<div class="h"><h1>🃏 Cát Tệ</h1><p>P2P Online Game</p></div>
+<div id="cs2" class="cs2 wait">Connecting...</div>
 <div id="lb">
-<div class="p" id="cp"><h2>🎮 ສ້າງຫ້ອງ</h2>
-<div class="ig"><label>ຊື່ຫຼິ້ນ</label><input type="text" id="mn" value=""></div>
-<button class="b bg bf" onclick="cr()">ສ້າງຫ້ອງ</button></div>
-<div class="p" id="wp" style="display:none"><h2>⏳ ລໍຖ້າຜູ້ຫຼິ້ນ</h2>
-<div class="rib"><div style="color:#888;font-size:12px">ແບ່ງປັນ ID ໃຫ້ໝູ່</div>
+<div class="p" id="cp"><h2>🎮 Create Room</h2>
+<div class="ig"><label>Your Name</label><input type="text" id="mn" value=""></div>
+<button class="b bg bf" onclick="cr()">Create Room</button></div>
+<div class="p" id="wp" style="display:none"><h2>⏳ Waiting</h2>
+<div class="rib"><div style="color:#888;font-size:12px">Send this ID to friend</div>
 <div class="id" id="rid">-</div>
-<button class="b" style="background:rgba(0,255,136,.2);color:#00ff88;border:1px solid #00ff88;padding:6px 20px;border-radius:15px;font-size:12px" onclick="cp2()">📋 ຄັດລອກ ID</button></div>
-<div style="color:#fff;font-size:13px;margin:10px 0">ອອນລາຍ: <span id="oc">1</span> ຄົນ</div>
+<button class="b" style="background:rgba(0,255,136,.2);color:#00ff88;border:1px solid #00ff88;padding:6px 20px;border-radius:15px;font-size:12px" onclick="cp2()">📋 Copy ID</button>
+<div style="color:#ff9800;font-size:11px;margin-top:8px">⚠️ Keep this page open! Don't close or switch apps</div></div>
+<div style="color:#fff;font-size:13px;margin:10px 0">Online: <span id="oc">1</span></div>
 <div id="wp2"></div>
-<button class="b bgr bf" id="bs" onclick="sg()" disabled>ເລີ່ມຫຼິ້ນ (2 ຄົນ)</button></div>
-<div class="p"><h2>🔗 ເຂົ້າຫ້ອງ</h2>
-<div class="ig"><label>ຊື່ຫຼິ້ນ</label><input type="text" id="jn" value=""></div>
-<div class="ig"><label>ID ຫ້ອງ</label><input type="text" id="jrid" placeholder="ໃສ່ ID ຫ້ອງ"></div>
-<button class="b bgr bf" onclick="jr()">ເຂົ້າຫ້ອງ</button></div>
+<button class="b bgr bf" id="bs" onclick="sg()" disabled>Start (2 players needed)</button></div>
+<div class="p"><h2>🔗 Join Room</h2>
+<div class="ig"><label>Your Name</label><input type="text" id="jn" value=""></div>
+<div class="ig"><label>Room ID from friend</label><input type="text" id="jrid" placeholder="Paste ID here"></div>
+<button class="b bgr bf" onclick="jr()">Join Room</button>
+<div style="color:#ff9800;font-size:11px;margin-top:10px;text-align:center">⚠️ Don't close this page after joining!</div></div>
 </div>
 <div id="ga" class="ga">
-<div class="sb"><span>ລາຍການ: <span class="hl" id="ri">1/6</span></span> | <span>ຕອນນີ້: <span class="hl" id="ti">-</span></span></div>
+<div class="sb"><span>Round: <span class="hl" id="ri">1/6</span></span> | <span>Turn: <span class="hl" id="ti">-</span></span></div>
 <div class="gt"><div class="s" id="sa"></div>
-<div class="pa"><div style="color:#555;font-size:11px">ກຳລັງຫຼິ້ນ</div>
-<div id="cc" style="display:flex;justify-content:center;gap:10px;margin:10px 0;min-height:70px;align-items:center"><span style="color:#444;font-size:12px">ລໍຖ້າ...</span></div>
+<div class="pa"><div style="color:#555;font-size:11px">Current Play</div>
+<div id="cc" style="display:flex;justify-content:center;gap:10px;margin:10px 0;min-height:70px;align-items:center"><span style="color:#444;font-size:12px">Waiting...</span></div>
 <div id="cb" style="color:#ffd700;font-size:12px"></div></div>
-<div class="ha"><div style="color:#fff;font-size:13px;margin-bottom:8px">ບັດຂອງທ່ານ <span id="mc">(6)</span></div>
+<div class="ha"><div style="color:#fff;font-size:13px;margin-bottom:8px">Your Cards <span id="mc">(6)</span></div>
 <div id="mh" style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap"></div></div></div>
-<div class="as"><button class="b bgr" id="bp" onclick="pc()" style="display:none">ຫຼິ້ນ</button>
-<button class="b bg" id="bps" onclick="ps()" style="display:none">ຜ່ານ</button>
-<button class="b bg" id="bn" onclick="nr()" style="display:none">ລາຍການຕໍ່ໄປ</button>
-<button class="b br" onclick="location.reload()">ອອກ</button></div>
+<div class="as"><button class="b bgr" id="bp" onclick="pc()" style="display:none">Play</button>
+<button class="b bg" id="bps" onclick="ps()" style="display:none">Pass</button>
+<button class="b bg" id="bn" onclick="nr()" style="display:none">Next Round</button>
+<button class="b br" onclick="location.reload()">Exit</button></div>
 </div>
 <div class="ts" id="ts"></div>
 <div class="rs" id="rsp"><div class="rb"><h2 id="rt" style="color:#ffd700;font-size:32px;margin-bottom:15px"></h2>
 <p id="ri2" style="color:#fff;margin-bottom:25px"></p>
-<button class="b bg" onclick="location.reload()">ຫຼິ້ນອີກຄັ້ງ</button></div></div>
+<button class="b bg" onclick="location.reload()">Play Again</button></div></div>
 <script>
 let peer=null,myId=null,isHost=false,rh=null,players=[],mi=-1,cr2=0,cci=0,lp=null,lpi=-1,rh2=[],sc=-1;
 const SU=['spade','club','diamond','heart'],SS={spade:'♠',club:'♣',diamond:'♦',heart:'♥'},SO={spade:0,club:1,diamond:2,heart:3};
 const RK=['2','3','4','5','6','7','8','9','10','J','Q','K','A'],RV={};RK.forEach((r,i)=>RV[r]=i+2);
 
+// Keep-alive ping
+let pingInterval=null;
+
 function ip(){
-  peer=new Peer({config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}});
+  peer=new Peer({config:{iceServers:[{urls:'stun:stun.l.google.com:19302'}]}});
   peer.on('open',id=>{
     myId=id;
     document.getElementById('cs2').className='cs2 ok';
     document.getElementById('cs2').textContent='✓ Connected';
-    console.log('Connected! ID:',id);
+    console.log('ID:',id);
+    // Start keep-alive
+    pingInterval=setInterval(()=>{if(peer&&peer.socket)peer.socket.send({type:'ping'})},25000);
   });
   peer.on('connection',c=>hi(c));
+  peer.on('disconnected',()=>{
+    console.log('Disconnected from server, reconnecting...');
+    if(peer)peer.reconnect();
+  });
   peer.on('error',e=>{
-    console.error('PeerJS error:',e);
+    console.error('Error:',e);
     document.getElementById('cs2').className='cs2 err';
     document.getElementById('cs2').textContent='✗ Error';
   });
@@ -112,6 +121,7 @@ function ip(){
 function cr(){
   const n=document.getElementById('mn').value.trim();
   if(!n){alert('Enter name');return}
+  if(!myId){alert('Not connected');return}
   isHost=true;rh=myId;mi=0;
   players=[{id:myId,name:n,conn:null,hand:[],tungs:0,eliminated:false}];
   document.getElementById('cp').style.display='none';
@@ -121,15 +131,22 @@ function cr(){
 }
 
 function hi(c){
+  console.log('Incoming connection from:',c.peer);
   c.on('open',()=>{
+    console.log('Connection opened with:',c.peer);
     if(!isHost)return;
     c.on('data',d=>{
+      console.log('Data from',c.peer,':',d.type);
       if(d.type==='join'){
         players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});
         bc();uw();tt(d.name+' joined');
       }
+      if(d.type==='act')pa(c.peer,d.a,d.d);
+      if(d.type==='ping')c.send({type:'pong'});
     });
+    c.on('close',()=>{console.log('Connection closed:',c.peer)});
   });
+  c.on('error',e=>console.error('Connection error:',e));
 }
 
 function uw(){
@@ -140,17 +157,32 @@ function uw(){
 
 function jr(){
   const n=document.getElementById('jn').value.trim(),id=document.getElementById('jrid').value.trim().toUpperCase();
-  if(!n||!id){alert('Fill all fields');return}
-  const c=peer.connect(id);
+  if(!n||!id){alert('Fill all');return}
+  tt('Connecting...');
+  const c=peer.connect(id,{reliable:true});
   c.on('open',()=>{
+    console.log('Connected to host:',id);
     isHost=false;rh=id;
     c.send({type:'join',name:n});
-    c.on('data',hm);
+    c.on('data',d=>{
+      console.log('Data from host:',d.type);
+      if(d.type==='act')pa(c.peer,d.a,d.d);
+      if(d.type==='gs')hm(d);
+      if(d.type==='ping')c.send({type:'pong'});
+    });
+    c.on('close',()=>{tt('Connection lost!');setTimeout(()=>location.reload(),2000)});
+    // Keep-alive for guest
+    setInterval(()=>{if(c.open)c.send({type:'ping'})},25000);
     document.getElementById('lb').style.display='none';
     document.getElementById('ga').classList.add('show');
     tt('Joined!');
   });
-  c.on('error',()=>tt('Connection error'));
+  c.on('error',e=>{
+    console.error('Connect error:',e);
+    tt('Connection error');
+  });
+  // Timeout
+  setTimeout(()=>{if(!c.open)tt('Timeout - try again')},10000);
 }
 
 function hm(d){
