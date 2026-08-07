@@ -394,4 +394,27 @@ function updateHand(){
 function updateButtons(){
   const mt=cci===mi&&!players[mi]?.eliminated;
   document.getElementById('btnPlay').style.display=mt?'inline-block':'none';
-  document.getElementById('btnPass').style.display=mt&&rh2.length>0?'in
+  document.getElementById('btnPass').style.display=mt&&rh2.length>0?'inline-block':'none';
+}
+
+function uw(){
+  document.getElementById('oc').textContent=players.length;
+  document.getElementById('btnStart').disabled=players.length<2;
+  document.getElementById('wp2').innerHTML=players.map((p,i)=>'<div style="background:rgba(255,255,255,.1);padding:8px 12px;border-radius:8px;margin:5px 0;color:#fff;font-size:13px">'+(i===0?'👑':'👤')+' '+p.name+'</div>').join('');
+}
+
+function sel(i){if(cci!==mi||players[mi]?.eliminated)return;sc=sc===i?-1:i;updateHand()}
+function pc(){if(sc<0)return tt('ເລືອກບັດກ່ອນ');handlePlay(myId,'play',{ci:sc});sc=-1}
+function ps(){handlePlay(myId,'pass',{})}
+function exit(){if(confirm('ອອກຈາກຫ້ອງ?'))location.reload()}
+function tt(m){const e=document.getElementById('ts');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500)}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+function sortCards(h){return h.sort((a,b)=>a.suit!==b.suit?a.suitOrder-b.suitOrder:a.value-b.value)}
+function cp2(){const t=document.getElementById('rid').textContent;navigator.clipboard?.writeText(t).then(()=>tt(L[lang].copy)).catch(()=>{prompt('Copy:',t)})}
+
+document.getElementById('mn').value='Player'+Math.floor(Math.random()*100);
+document.getElementById('jn').value=document.getElementById('mn').value;
+ip();setLang(lang);
+</script>
+</body>
+</html>
