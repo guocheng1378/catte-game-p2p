@@ -48,46 +48,174 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 .cs2{position:fixed;bottom:10px;right:10px;padding:5px 10px;border-radius:5px;font-size:10px;color:#fff;z-index:100}
 .cs2.ok{background:#4caf50}.cs2.err{background:#f44336}.cs2.wait{background:#ff9800}
 .tip{color:#00ff88;font-size:11px;margin-top:8px;text-align:center}
+.lang-switch{position:fixed;top:10px;right:10px;z-index:1000;display:flex;gap:5px}
+.lang-btn{padding:6px 12px;border:2px solid rgba(255,255,255,.3);border-radius:20px;background:rgba(0,0,0,.5);color:#fff;font-size:12px;cursor:pointer}
+.lang-btn.active{border-color:#ffd700;background:rgba(255,215,0,.2)}
 </style>
 </head>
 <body>
+<div class="lang-switch">
+  <button class="lang-btn active" id="btn-lo" onclick="setLang('lo')">ລາວ</button>
+  <button class="lang-btn" id="btn-zh" onclick="setLang('zh')">中文</button>
+</div>
+
 <div class="c">
-<div class="h"><h1>🃏 ຊາເຈົ້າ</h1><p>P2P Card Game</p></div>
+<div class="h"><h1 id="title">🃏 ຊາເຈົ້າ</h1><p id="subtitle">P2P Card Game</p></div>
 <div id="cs2" class="cs2 wait">Connecting...</div>
 <div id="lb">
-<div class="p" id="cp"><h2>🎮 Create Room</h2>
-<div class="ig"><label>Name</label><input type="text" id="mn" value=""></div>
-<button class="b bg bf" onclick="cr()">Create Room</button></div>
-<div class="p" id="wp" style="display:none"><h2>⏳ Waiting...</h2>
-<div class="rib"><div style="color:#888;font-size:12px">Share this code</div>
+<div class="p" id="cp"><h2 id="h-create">🎮 Create Room</h2>
+<div class="ig"><label id="l-name">Name</label><input type="text" id="mn" value=""></div>
+<button class="b bg bf" onclick="cr()" id="btn-create">Create Room</button></div>
+<div class="p" id="wp" style="display:none"><h2 id="h-wait">⏳ Waiting...</h2>
+<div class="rib"><div style="color:#888;font-size:12px" id="l-share">Share this code</div>
 <div class="id" id="rid" onclick="cp2()">-</div>
 <div class="tip">👆 Tap to copy</div></div>
-<div style="color:#fff;font-size:13px;margin:10px 0">Players: <span id="oc">1</span>/2</div>
+<div style="color:#fff;font-size:13px;margin:10px 0"><span id="l-players">Players</span>: <span id="oc">1</span>/2</div>
 <div id="wp2"></div>
-<button class="b bg" id="btnStart" onclick="startGame()" style="display:none">Start Game</button>
-<button class="b br" onclick="exit()">Cancel</button></div>
-<div class="p"><h2>🔗 Join Room</h2>
-<div class="ig"><label>Name</label><input type="text" id="jn" value=""></div>
-<div class="ig"><label>Room Code</label><input type="text" id="jrid" maxlength="4" placeholder="4 digits" inputmode="numeric"></div>
-<button class="b bgr bf" onclick="jr()">Join</button></div>
+<button class="b bg" id="btnStart" onclick="startGame()" style="display:none" id="btn-start">Start Game</button>
+<button class="b br" onclick="exit()" id="btn-cancel">Cancel</button></div>
+<div class="p"><h2 id="h-join">🔗 Join Room</h2>
+<div class="ig"><label id="l-name2">Name</label><input type="text" id="jn" value=""></div>
+<div class="ig"><label id="l-code">Room Code</label><input type="text" id="jrid" maxlength="4" placeholder="4 digits" inputmode="numeric"></div>
+<button class="b bgr bf" onclick="jr()" id="btn-join">Join</button></div>
 </div>
 <div id="ga" class="ga">
-<div class="sb"><span>Round</span>: <span class="hl" id="ri">1/6</span> | <span>Turn</span>: <span class="hl" id="ti">-</span></div>
+<div class="sb"><span id="l-round">Round</span>: <span class="hl" id="ri">1/6</span> | <span id="l-turn">Turn</span>: <span class="hl" id="ti">-</span></div>
 <div class="gt"><div class="s" id="sa"></div>
-<div class="pa"><div style="color:#555;font-size:11px">Center</div>
+<div class="pa"><div style="color:#555;font-size:11px" id="l-center">Center</div>
 <div id="cc" style="display:flex;justify-content:center;gap:10px;margin:10px 0;min-height:70px;align-items:center"><span style="color:#444">...</span></div>
 <div id="cb" style="color:#ffd700;font-size:12px"></div></div>
-<div class="ha"><div style="color:#fff;font-size:13px;margin-bottom:8px">Your Cards <span id="mc">(6)</span></div>
+<div class="ha"><div style="color:#fff;font-size:13px;margin-bottom:8px"><span id="l-cards">Your Cards</span> <span id="mc">(6)</span></div>
 <div id="mh" style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;min-height:90px"></div></div></div>
-<div class="as"><button class="b bgr" id="btnPlay" onclick="pc()" style="display:none">🃏 Play</button>
-<button class="b bg" id="btnPass" onclick="ps()" style="display:none">⏭ Pass</button>
-<button class="b br" onclick="exit()">Exit</button></div>
+<div class="as"><button class="b bgr" id="btnPlay" onclick="pc()" style="display:none">🃏 <span id="btn-play">Play</span></button>
+<button class="b bg" id="btnPass" onclick="ps()" style="display:none">⏭ <span id="btn-pass">Pass</span></button>
+<button class="b br" onclick="exit()" id="btn-exit">Exit</button></div>
 </div>
 <div class="ts" id="ts"></div>
 <div class="rs" id="rsp"><div class="rb"><h2 id="rt" style="color:#ffd700;font-size:32px;margin-bottom:15px"></h2>
-<button class="b bg" onclick="location.reload()">Play Again</button></div></div>
+<button class="b bg" onclick="location.reload()" id="btn-again">Play Again</button></div></div>
 
 <script>
+let currentLang='lo';
+const LANG={
+  lo:{
+    title:'🃏 ຊາເຈົ້າ',
+    subtitle:'P2P Card Game',
+    hCreate:'🎮 Create Room',
+    hWait:'⏳ Waiting...',
+    hJoin:'🔗 Join Room',
+    name:'Name',
+    name2:'Name',
+    create:'Create Room',
+    share:'Share this code',
+    players:'Players',
+    start:'Start Game',
+    cancel:'Cancel',
+    join:'Join',
+    code:'Room Code',
+    round:'Round',
+    turn:'Turn',
+    center:'Center',
+    cards:'Your Cards',
+    play:'Play',
+    pass:'Pass',
+    exit:'Exit',
+    again:'Play Again',
+    connecting:'Connecting...',
+    ready:'✓ Ready',
+    error:'Error',
+    roomExists:'Room exists',
+    roomFull:'Room full',
+    gameInProgress:'Game in progress',
+    roomNotFound:'Room not found',
+    selectCard:'Select card',
+    notYourTurn:'Not your turn',
+    sameSuit:'Same suit!',
+    bigger:'Bigger!',
+    mustPlay:'Must play',
+    cardSent:'Card sent!',
+    connected:'Connected! Waiting...',
+    disconnected:'Disconnected'
+  },
+  zh:{
+    title:'🃏 ຊາເຈົ້າ',
+    subtitle:'P2P 卡牌游戏',
+    hCreate:'🎮 创建房间',
+    hWait:'⏳ 等待中...',
+    hJoin:'🔗 加入房间',
+    name:'名字',
+    name2:'名字',
+    create:'创建房间',
+    share:'分享这个房间码',
+    players:'玩家',
+    start:'开始游戏',
+    cancel:'取消',
+    join:'加入',
+    code:'房间码',
+    round:'轮次',
+    turn:'当前回合',
+    center:'中央',
+    cards:'你的手牌',
+    play:'出牌',
+    pass:'跳过',
+    exit:'退出',
+    again:'再来一局',
+    connecting:'连接中...',
+    ready:'✓ 已连接',
+    error:'错误',
+    roomExists:'房间已存在',
+    roomFull:'房间已满',
+    gameInProgress:'游戏进行中',
+    roomNotFound:'房间未找到',
+    selectCard:'请选择卡牌',
+    notYourTurn:'不是你的回合',
+    sameSuit:'必须同花色！',
+    bigger:'必须更大！',
+    mustPlay:'必须出牌',
+    cardSent:'卡牌已发送！',
+    connected:'已连接！等待中...',
+    disconnected:'连接断开'
+  }
+};
+
+function t(key){return LANG[currentLang][key]||LANG.lo[key]||key}
+
+function updateTexts(){
+  document.getElementById('title').textContent=t('title');
+  document.getElementById('subtitle').textContent=t('subtitle');
+  document.getElementById('h-create').textContent=t('hCreate');
+  document.getElementById('h-wait').textContent=t('hWait');
+  document.getElementById('h-join').textContent=t('hJoin');
+  document.getElementById('l-name').textContent=t('name');
+  document.getElementById('l-name2').textContent=t('name2');
+  document.getElementById('btn-create').textContent=t('create');
+  document.getElementById('l-share').textContent=t('share');
+  document.getElementById('l-players').textContent=t('players');
+  document.getElementById('btn-start').textContent=t('start');
+  document.getElementById('btn-cancel').textContent=t('cancel');
+  document.getElementById('l-code').textContent=t('code');
+  document.getElementById('btn-join').textContent=t('join');
+  document.getElementById('l-round').textContent=t('round');
+  document.getElementById('l-turn').textContent=t('turn');
+  document.getElementById('l-center').textContent=t('center');
+  document.getElementById('l-cards').textContent=t('cards');
+  document.getElementById('btn-play').textContent=t('play');
+  document.getElementById('btn-pass').textContent=t('pass');
+  document.getElementById('btn-exit').textContent=t('exit');
+  document.getElementById('btn-again').textContent=t('again');
+}
+
+function setLang(lang){
+  currentLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+lang).classList.add('active');
+  updateTexts();
+  localStorage.setItem('catte-lang',lang);
+}
+
+const savedLang=localStorage.getItem('catte-lang');
+if(savedLang)setLang(savedLang);
+
 let peer=null,myId=null,isHost=false,players=[],mi=-1,cr2=0,cci=0,lp=null,lpi=-1,rh2=[],sc=-1,gameStarted=false,hostConn=null;
 const SU=['spade','club','diamond','heart'],SS={spade:'♠',club:'♣',diamond:'♦',heart:'♥'},SO={spade:0,club:1,diamond:2,heart:3};
 const RK=['2','3','4','5','6','7','8','9','10','J','Q','K','A'],RV={};RK.forEach((r,i)=>RV[r]=i+2);
@@ -96,36 +224,36 @@ function initPeer(code,isCreator){
   return new Promise((resolve,reject)=>{
     const peerId=isCreator?'room_'+code:'joiner_'+Date.now();
     const p=new Peer(peerId,{config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}});
-    p.on('open',id=>{document.getElementById('cs2').className='cs2 ok';document.getElementById('cs2').textContent='✓ Ready';resolve(p)});
-    p.on('error',e=>{if(e.type==='unavailable-id'&&isCreator){reject('Room exists')}else{reject(e.type)}});
+    p.on('open',id=>{document.getElementById('cs2').className='cs2 ok';document.getElementById('cs2').textContent=t('ready');resolve(p)});
+    p.on('error',e=>{if(e.type==='unavailable-id'&&isCreator){reject(t('roomExists'))}else{reject(e.type)}});
   });
 }
 
 async function cr(){
-  const n=document.getElementById('mn').value.trim();if(!n){alert('Enter name');return}
+  const n=document.getElementById('mn').value.trim();if(!n){alert(t('name'));return}
   const code=String(Math.floor(1000+Math.random()*9000));
   try{
     peer=await initPeer(code,true);isHost=true;mi=0;gameStarted=false;myId=code;
     players=[{id:code,name:n,conn:null,hand:[],tungs:0,eliminated:false}];
-    peer.on('connection',c=>{c.on('open',()=>{c.on('data',d=>{if(d.type==='join'&&isHost){if(gameStarted){c.send({type:'reject',reason:'Game in progress'});return}if(players.length>=2){c.send({type:'reject',reason:'Room full'});return}players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});uw();tt(d.name+' joined!');if(players.length>=2){document.getElementById('btnStart').style.display='inline-block'}}if(d.type==='play'&&isHost){handlePlay(c.peer,d.ci)}if(d.type==='pass'&&isHost){handlePass()}});c.on('close',()=>{players=players.filter(p=>p.id!==c.peer);uw()})})});
+    peer.on('connection',c=>{c.on('open',()=>{c.on('data',d=>{if(d.type==='join'&&isHost){if(gameStarted){c.send({type:'reject',reason:t('gameInProgress')});return}if(players.length>=2){c.send({type:'reject',reason:t('roomFull')});return}players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});uw();tt(d.name+(currentLang==='lo'?' joined!':' 加入了！'));if(players.length>=2){document.getElementById('btnStart').style.display='inline-block'}}if(d.type==='play'&&isHost){handlePlay(c.peer,d.ci)}if(d.type==='pass'&&isHost){handlePass()}});c.on('close',()=>{players=players.filter(p=>p.id!==c.peer);uw()})})});
     document.getElementById('cp').style.display='none';document.getElementById('wp').style.display='block';document.getElementById('rid').textContent=code;uw();
-  }catch(e){tt('Error: '+e)}
+  }catch(e){tt(t('error')+': '+e)}
 }
 
 async function jr(){
   const n=document.getElementById('jn').value.trim();const code=document.getElementById('jrid').value.trim();
-  if(!n||!code||code.length!==4){alert('Enter name and 4-digit code');return}
+  if(!n||!code||code.length!==4){alert(t('name')+' & '+t('code'));return}
   try{
     peer=await initPeer(code,false);isHost=false;
     const c=peer.connect('room_'+code,{reliable:true});
     hostConn=c;
     c.on('open',()=>{c.send({type:'join',name:n});
       c.on('data',d=>{if(d.type==='reject'){tt('❌ '+d.reason);return}if(d.type==='gameStart'){receiveGameState(d.state)}});
-      c.on('close',()=>{tt('Disconnected');setTimeout(()=>location.reload(),2000)});
-      tt('Connected! Waiting...');
+      c.on('close',()=>{tt(t('disconnected'));setTimeout(()=>location.reload(),2000)});
+      tt(t('connected'));
     });
-    c.on('error',e=>{tt('Room not found')});
-  }catch(e){tt('Error: '+e)}
+    c.on('error',e=>{tt(t('roomNotFound'))});
+  }catch(e){tt(t('error')+': '+e)}
 }
 
 function startGame(){
@@ -154,7 +282,7 @@ function updateHostUI(){
   document.getElementById('sa').innerHTML=players.map((p,i)=>'<div class="st '+(i===cci?'a':'')+(i===0?' m':'')+'"><div class="n">'+p.name+'</div><div style="display:flex;justify-content:center;margin-top:5px">'+Array(p.hand.length).fill('<div class="cd bk mini"></div>').join('')+'</div><div style="color:#888;font-size:10px">Tủng: '+p.tungs+'</div></div>').join('');
   document.getElementById('ri').textContent=(cr2+1)+'/6';document.getElementById('ti').textContent=players[cci]?.name||'-';
   const cc=document.getElementById('cc'),cb=document.getElementById('cb');
-  if(!lp){cc.innerHTML='<span style="color:#444">'+(cci===0?'Your turn':'Waiting...')+'</span>';cb.textContent=''}
+  if(!lp){cc.innerHTML='<span style="color:#444">'+(cci===0?(currentLang==='lo'?'Your turn':'你的回合'):(currentLang==='lo'?'Waiting...':'等待中...'))+'</span>';cb.textContent=''}
   else{cc.innerHTML='<div class="cd '+(lp.suit==='heart'||lp.suit==='diamond'?'r':'k')+'"><div class="cn t"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div><div class="cc">'+SS[lp.suit]+'</div><div class="cn b"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div></div>';cb.textContent=players[lpi]?.name||''}
   document.getElementById('mc').textContent='('+players[0].hand.length+')';
   document.getElementById('mh').innerHTML=players[0].hand.map((c,i)=>'<div class="cd '+(c.suit==='heart'||c.suit==='diamond'?'r':'k')+' '+(sc===i?'sel':'')+'" onclick="sel('+i+')"><div class="cn t"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div><div class="cc">'+SS[c.suit]+'</div><div class="cn b"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div></div>').join('');
@@ -166,7 +294,7 @@ function updateClientUI(){
   document.getElementById('sa').innerHTML=players.map((p,i)=>'<div class="st '+(i===cci?'a':'')+(i===1?' m':'')+'"><div class="n">'+p.name+'</div><div style="display:flex;justify-content:center;margin-top:5px">'+Array(p.hc||0).fill('<div class="cd bk mini"></div>').join('')+'</div><div style="color:#888;font-size:10px">Tủng: '+p.tungs+'</div></div>').join('');
   document.getElementById('ri').textContent=(cr2+1)+'/6';document.getElementById('ti').textContent=players[cci]?.name||'-';
   const cc=document.getElementById('cc'),cb=document.getElementById('cb');
-  if(!lp){cc.innerHTML='<span style="color:#444">'+(cci===1?'Your turn':'Waiting...')+'</span>';cb.textContent=''}
+  if(!lp){cc.innerHTML='<span style="color:#444">'+(cci===1?(currentLang==='lo'?'Your turn':'你的回合'):(currentLang==='lo'?'Waiting...':'等待中...'))+'</span>';cb.textContent=''}
   else{cc.innerHTML='<div class="cd '+(lp.suit==='heart'||lp.suit==='diamond'?'r':'k')+'"><div class="cn t"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div><div class="cc">'+SS[lp.suit]+'</div><div class="cn b"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div></div>';cb.textContent=players[lpi]?.name||''}
   document.getElementById('mc').textContent='('+players[1].hand.length+')';
   document.getElementById('mh').innerHTML=players[1].hand.map((c,i)=>'<div class="cd '+(c.suit==='heart'||c.suit==='diamond'?'r':'k')+' '+(sc===i?'sel':'')+'" onclick="sel('+i+')"><div class="cn t"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div><div class="cc">'+SS[c.suit]+'</div><div class="cn b"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div></div>').join('');
@@ -175,30 +303,30 @@ function updateClientUI(){
 }
 
 function pc(){
-  if(sc<0){tt('Select card');return}
+  if(sc<0){tt(t('selectCard'));return}
   const myIdx=isHost?0:1;
-  if(cci!==myIdx){tt("Not your turn");return}
+  if(cci!==myIdx){tt(t('notYourTurn'));return}
   
   if(isHost){
     const card=players[0].hand[sc];
-    if(lp&&card.suit!==lp.suit&&players[0].hand.some(x=>x.suit===lp.suit)){tt('Same suit!');return}
-    if(lp&&card.suit===lp.suit&&card.value<=lp.value){tt('Bigger!');return}
+    if(lp&&card.suit!==lp.suit&&players[0].hand.some(x=>x.suit===lp.suit)){tt(t('sameSuit'));return}
+    if(lp&&card.suit===lp.suit&&card.value<=lp.value){tt(t('bigger'));return}
     players[0].hand.splice(sc,1);lp=card;lpi=0;rh2.push({pi:0,c:card});sc=-1;
     if(players[0].hand.length===0){endRound(0);return}
     cci=1;updateHostUI();sendGameState();
   }else{
     hostConn.send({type:'play',ci:sc});
     sc=-1;
-    tt('Card sent!');
+    tt(t('cardSent'));
   }
 }
 
 function ps(){
   const myIdx=isHost?0:1;
-  if(cci!==myIdx){tt("Not your turn");return}
+  if(cci!==myIdx){tt(t('notYourTurn'));return}
   
   if(isHost){
-    if(!rh2.length){tt('Must play');return}
+    if(!rh2.length){tt(t('mustPlay'));return}
     endRound(lpi);
   }else{
     hostConn.send({type:'pass'});
@@ -207,19 +335,19 @@ function ps(){
 
 function handlePlay(pid,ci){
   const card=players[1].hand[ci];if(!card)return;
-  if(lp&&card.suit!==lp.suit&&players[1].hand.some(x=>x.suit===lp.suit)){tt('Same suit!');return}
-  if(lp&&card.suit===lp.suit&&card.value<=lp.value){tt('Bigger!');return}
+  if(lp&&card.suit!==lp.suit&&players[1].hand.some(x=>x.suit===lp.suit)){tt(t('sameSuit'));return}
+  if(lp&&card.suit===lp.suit&&card.value<=lp.value){tt(t('bigger'));return}
   players[1].hand.splice(ci,1);lp=card;lpi=1;rh2.push({pi:1,c:card});
   if(players[1].hand.length===0){endRound(1);return}
   cci=0;updateHostUI();sendGameState();
 }
 
-function handlePass(){if(!rh2.length){tt('Must play');return}endRound(lpi)}
+function handlePass(){if(!rh2.length){tt(t('mustPlay'));return}endRound(lpi)}
 
 function endRound(w){
   players[w].tungs++;if(players[w].tungs>=3)players[w].eliminated=true;
   if(players.filter(p=>!p.eliminated).length<=1){showWinner();return}
-  if(players.every(p=>p.hand.length===0)){cr2++;if(cr2>=6){showWinner();return}resetRound(w)(w)()}
+  if(players.every(p=>p.hand.length===0)){cr2++;if(cr2>=6){showWinner();return}resetRound()}()
 }
 
 function resetRound(){
@@ -252,10 +380,11 @@ function exit(){location.reload()}
 function tt(m){const e=document.getElementById('ts');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500)}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 function sortCards(h){return h.sort((a,b)=>a.suit!==b.suit?SO[a.suit]-SO[b.suit]:a.value-b.value)}
-function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').textContent).then(()=>tt('Copied!')).catch(()=>{prompt('Copy:',document.getElementById('rid').textContent)})}
+function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').textContent).then(()=>tt(currentLang==='lo'?'Copied!':'已复制！')).catch(()=>{prompt('Copy:',document.getElementById('rid').textContent)})}
 
 document.getElementById('mn').value='P'+Math.floor(Math.random()*100);
 document.getElementById('jn').value=document.getElementById('mn').value;
+updateTexts();
 </script>
 </body>
 </html>
