@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="lo">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,11 +52,12 @@ body{font-family:Arial,'Noto Sans Lao',sans-serif;background:linear-gradient(135
 .rb{background:linear-gradient(135deg,#1a237e,#283593);border-radius:20px;padding:40px;text-align:center}
 .cs2{position:fixed;bottom:10px;right:10px;padding:5px 10px;border-radius:5px;font-size:10px;color:#fff}
 .cs2.ok{background:#4caf50}.cs2.err{background:#f44336}
+.cs2.try{background:#ff9800}
 </style>
 </head>
 <body>
 <div class="c">
-<div class="h"><h1 id="title">🃏 ຊາເຈົ້າ Cát Tệ</h1><p id="subtitle">P2P · ບໍ່ຕ້ອງການເຊີ່ງເວັບ</p></div>
+<div class="h"><h1 id="title">🃏 Cát Tệ</h1><p id="subtitle">P2P · ບໍ່ຕ້ອງການເຊີ່ງເວັບ</p></div>
 <div class="lang-bar">
 <button class="lang-btn" onclick="setLang('zh')">🇨🇳 中文</button>
 <button class="lang-btn active" onclick="setLang('lo')">🇱🇦 ລາວ</button>
@@ -77,7 +78,8 @@ body{font-family:Arial,'Noto Sans Lao',sans-serif;background:linear-gradient(135
 <div class="p"><h2 id="h_join">🔗 ເຂົ້າຫ້ອງ</h2>
 <div class="ig"><label id="l_name2">ຊື່ຫຼິ້ນ</label><input type="text" id="jn" value=""></div>
 <div class="ig"><label id="l_rid">ID ຫ້ອງ</label><input type="text" id="jrid" placeholder="ໃສ່ ID ຫ້ອງ"></div>
-<button class="b bgr bf" onclick="jr()" id="btn_join">ເຂົ້າຫ້ອງ</button></div>
+<button class="b bgr bf" onclick="jr()" id="btn_join">ເຂົ້າຫ້ອງ</button>
+<p id="tip_text" style="color:#888;font-size:11px;margin-top:10px;text-align:center"></p></div>
 </div>
 <div id="ga" class="ga">
 <div class="sb"><span id="l_round">ລາຍການ</span>: <span class="hl" id="ri">1/6</span> | <span id="l_curr">ຕອນນີ້</span>: <span class="hl" id="ti">-</span></div>
@@ -102,21 +104,38 @@ body{font-family:Arial,'Noto Sans Lao',sans-serif;background:linear-gradient(135
 <button class="b bg" onclick="location.reload()" id="btn_again">ຫຼິ້ນອີກຄັ້ງ</button></div></div>
 <script>
 const L={
-zh:{title:'🃏 萨切 Cát Tệ',subtitle:'P2P联机 · 无需服务器',conn:'连接中...',connOk:'✓ 已连接',hCreate:'🎮 创建房间',hWait:'⏳ 等待玩家加入',hJoin:'🔗 加入房间',name:'你的昵称',share:'分享此房间ID给朋友',copy:'📋 复制ID',online:'在线',ppl:'人',start:'开始游戏（需2人）',rid:'房间ID',join:'加入房间',round:'轮次',curr:'当前',play:'当前出牌',wait:'等待出牌...',hand:'你的手牌',btnPlay:'出牌',btnPass:'跳过',btnNext:'下一轮',btnExit:'退出',tip:'点击选择牌，然后点出牌',pass2:'🔄 请交给下一位玩家',ready:'准备好后点击按钮',ready2:'我准备好了',again:'再来一局',copied:'已复制',joined:'已加入',joinMsg:' 加入了',winRound:' 赢得本轮！',mustSuit:'必须出同花色',mustBigger:'必须出更大的牌',mustPlay:'必须出牌',selCard:'请先选牌',winner:'🏆 获胜！',tung:'Tủng',elim:'❌ 淘汰',host:'👑',me:'(我)'},
-lo:{title:'🃏 ຊາເຈົ້າ Cát Tệ',subtitle:'P2P · ບໍ່ຕ້ອງການເຊີ່ງເວັບ',conn:'ກຳລັງເຊື່ອມຕໍ່...',connOk:'✓ ເຊື່ອມຕໍ່ແລ້ວ',hCreate:'🎮 ສ້າງຫ້ອງ',hWait:'⏳ ລໍຖ້າຜູ້ຫຼິ້ນ',hJoin:'🔗 ເຂົ້າຫ້ອງ',name:'ຊື່ຫຼິ້ນ',share:'ແບ່ງປັນ ID ໃຫ້ໝູ່',copy:'📋 ຄັດລອກ ID',online:'ອອນລາຍ',ppl:'ຄົນ',start:'ເລີ່ມຫຼິ້ນ (2 ຄົນ)',rid:'ID ຫ້ອງ',join:'ເຂົ້າຫ້ອງ',round:'ລາຍການ',curr:'ຕອນນີ້',play:'ກຳລັງຫຼິ້ນ',wait:'ລໍຖ້າ...',hand:'ບັດຂອງທ່ານ',btnPlay:'ຫຼິ້ນ',btnPass:'ຜ່ານ',btnNext:'ລາຍການຕໍ່ໄປ',btnExit:'ອອກ',tip:'ເລືອກບັດແລ້ວກົດຫຼິ້ນ',pass2:'🔄 ສົ່ງໃຫ້ຜູ້ຕໍ່ໄປ',ready:'ກົດເມື່ອພ້ອມ',ready2:'ຂ້ອຍພ້ອມແລ້ວ',again:'ຫຼິ້ນອີກຄັ້ງ',copied:'ຄັດລອກແລ້ວ',joined:'ເຂົ້າແລ້ວ',joinMsg:' ເຂົ້າຮ່ວມ',winRound:' ໄດ້ຊະນະ!',mustSuit:'ຕ້ອງຫຼິ້ນບັດຊຸດດຽວກັນ',mustBigger:'ຕ້ອງຫຼິ້ນບັດໃຫຍ່ກວ່າ',mustPlay:'ຕ້ອງຫຼິ້ນບັດ',selCard:'ກະລຸນາເລືອກບັດ',winner:'🏆 ໄດ້ຊະນະ!',tung:'Tủng',elim:'❌ ຖືກຕັດອອກ',host:'👑',me:'(ຂ້ອຍ)'},
-en:{title:'🃏 Cát Tệ',subtitle:'P2P Online · No Server',conn:'Connecting...',connOk:'✓ Connected',hCreate:'🎮 Create Room',hWait:'⏳ Waiting...',hJoin:'🔗 Join Room',name:'Nickname',share:'Share ID with friends',copy:'📋 Copy ID',online:'Online',ppl:'',start:'Start (Need 2)',rid:'Room ID',join:'Join',round:'Round',curr:'Current',play:'Playing',wait:'Waiting...',hand:'Your Hand',btnPlay:'Play',btnPass:'Pass',btnNext:'Next',btnExit:'Exit',tip:'Select card then Play',pass2:'🔄 Pass to next player',ready:'Click when ready',ready2:"I'm Ready",again:'Play Again',copied:'Copied!',joined:'Joined',joinMsg:' joined',winRound:' won!',mustSuit:'Must play same suit',mustBigger:'Must play higher',mustPlay:'Must play',selCard:'Select a card',winner:'🏆 Winner!',tung:'Tủng',elim:'❌ Out',host:'👑',me:'(Me)'}
+zh:{title:'🃏 萨切 Cát Tệ',subtitle:'P2P联机 · 无需服务器',conn:'连接中...',connOk:'✓ 已连接',connFail:'✗ 连接失败，请刷新重试',hCreate:'🎮 创建房间',hWait:'⏳ 等待玩家加入',hJoin:'🔗 加入房间',name:'你的昵称',share:'分享此房间ID给朋友',copy:'📋 复制ID',online:'在线',ppl:'人',start:'开始游戏（需2人）',rid:'房间ID',join:'加入房间',round:'轮次',curr:'当前',play:'当前出牌',wait:'等待出牌...',hand:'你的手牌',btnPlay:'出牌',btnPass:'跳过',btnNext:'下一轮',btnExit:'退出',tip:'点击选择牌，然后点出牌',pass2:'🔄 请交给下一位玩家',ready:'准备好后点击按钮',ready2:'我准备好了',again:'再来一局',copied:'已复制',joined:'已加入',joinMsg:' 加入了',winRound:' 赢得本轮！',mustSuit:'必须出同花色',mustBigger:'必须出更大的牌',mustPlay:'必须出牌',selCard:'请先选牌',winner:'🏆 获胜！',tung:'Tủng',elim:'❌ 淘汰',host:'👑',me:'(我)',copyId:'← 把这个ID发给朋友',copyHelp:'朋友打开游戏后输入此ID加入',error:'连接出错，请刷新重试',idEmpty:'请输入房间ID',nameEmpty:'请输入昵称'},
+lo:{title:'🃏 ຊາເຈົ້າ Cát Tệ',subtitle:'P2P · ບໍ່ຕ້ອງການເຊີ່ງເວັບ',conn:'ກຳລັງເຊື່ອມຕໍ່...',connOk:'✓ ເຊື່ອມຕໍ່ແລ້ວ',connFail:'✗ ເຊື່ອມຕໍ່ລົ້ມເຫຼວ',hCreate:'🎮 ສ້າງຫ້ອງ',hWait:'⏳ ລໍຖ້າຜູ້ຫຼິ້ນ',hJoin:'🔗 ເຂົ້າຫ້ອງ',name:'ຊື່ຫຼິ້ນ',share:'ແບ່ງປັນ ID ໃຫ້ໝູ່',copy:'📋 ຄັດລອກ ID',online:'ອອນລາຍ',ppl:'ຄົນ',start:'ເລີ່ມຫຼິ້ນ (2 ຄົນ)',rid:'ID ຫ້ອງ',join:'ເຂົ້າຫ້ອງ',round:'ລາຍການ',curr:'ຕອນນີ້',play:'ກຳລັງຫຼິ້ນ',wait:'ລໍຖ້າ...',hand:'ບັດຂອງທ່ານ',btnPlay:'ຫຼິ້ນ',btnPass:'ຜ່ານ',btnNext:'ລາຍການຕໍ່ໄປ',btnExit:'ອອກ',tip:'ເລືອກບັດແລ້ວກົດຫຼິ້ນ',pass2:'🔄 ສົ່ງໃຫ້ຜູ້ຕໍ່ໄປ',ready:'ກົດເມື່ອພ້ອມ',ready2:'ຂ້ອຍພ້ອມແລ້ວ',again:'ຫຼິ້ນອີກຄັ້ງ',copied:'ຄັດລອກແລ້ວ',joined:'ເຂົ້າແລ້ວ',joinMsg:' ເຂົ້າຮ່ວມ',winRound:' ໄດ້ຊະນະ!',mustSuit:'ຕ້ອງຫຼິ້ນບັດຊຸດດຽວກັນ',mustBigger:'ຕ້ອງຫຼິ້ນບັດໃຫຍ່ກວ່າ',mustPlay:'ຕ້ອງຫຼິ້ນບັດ',selCard:'ກະລຸນາເລືອກບັດ',winner:'🏆 ໄດ້ຊະນະ!',tung:'Tủng',elim:'❌ ຖືກຕັດອອກ',host:'👑',me:'(ຂ້ອຍ)',copyId:'← ສົ່ງ ID ນີ້ໃຫ້ໝູ່',copyHelp:'ໝູ່ເປີດເກມແລ້ວໃສ່ ID ນີ້',error:'ເຊື່ອມຕໍ່ລົ້ມເຫຼວ',idEmpty:'ກະລຸນາໃສ່ ID',nameEmpty:'ກະລຸນາໃສ່ຊື່'},
+en:{title:'🃏 Cát Tệ',subtitle:'P2P Online · No Server',conn:'Connecting...',connOk:'✓ Connected',connFail:'✗ Failed, refresh page',hCreate:'🎮 Create Room',hWait:'⏳ Waiting...',hJoin:'🔗 Join Room',name:'Nickname',share:'Share ID with friends',copy:'📋 Copy ID',online:'Online',ppl:'',start:'Start (Need 2)',rid:'Room ID',join:'Join',round:'Round',curr:'Current',play:'Playing',wait:'Waiting...',hand:'Your Hand',btnPlay:'Play',btnPass:'Pass',btnNext:'Next',btnExit:'Exit',tip:'Select card then Play',pass2:'🔄 Pass to next player',ready:'Click when ready',ready2:"I'm Ready",again:'Play Again',copied:'Copied!',joined:'Joined',joinMsg:' joined',winRound:' won!',mustSuit:'Must play same suit',mustBigger:'Must play higher',mustPlay:'Must play',selCard:'Select a card',winner:'🏆 Winner!',tung:'Tủng',elim:'❌ Out',host:'👑',me:'(Me)',copyId:'← Share this ID',copyHelp:'Friend opens game & enters ID',error:'Connection error',idEmpty:'Enter room ID',nameEmpty:'Enter nickname'}
 };
 let lang=localStorage.getItem('cl')||'lo';
-function setLang(l){lang=l;localStorage.setItem('cl',l);document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.lang-btn').forEach(b=>{if((l==='zh'&&b.textContent.includes('中文'))||(l==='lo'&&b.textContent.includes('ລາວ'))||(l==='en'&&b.textContent.includes('English')))b.classList.add('active')});const m={title:'title',subtitle:'subtitle',h_create:'h_create',h_wait:'h_wait',h_join:'h_join',l_name:'l_name',l_name2:'l_name2',l_share:'l_share',l_online:'l_online',l_ppl:'l_ppl',l_rid:'l_rid',l_round:'l_round',l_curr:'l_curr',l_play:'l_play',l_wait:'l_wait',l_hand:'l_hand',l_tip:'l_tip',l_pass:'l_pass',l_ready:'l_ready'};Object.keys(m).forEach(k=>{const el=document.getElementById(m[k]);if(el)el.textContent=L[l][k]||el.textContent});document.getElementById('cs2').textContent=L[l].conn;document.getElementById('btn_create').textContent=L[l].start;document.getElementById('btn_copy').textContent=L[l].copy;document.getElementById('btn_start').textContent=L[l].start;document.getElementById('btn_join').textContent=L[l].join;document.getElementById('btn_play').textContent=L[l].btnPlay;document.getElementById('btn_pass').textContent=L[l].btnPass;document.getElementById('btn_next').textContent=L[l].btnNext;document.getElementById('btn_exit').textContent=L[l].btnExit;document.getElementById('btn_ready').textContent=L[l].ready2;document.getElementById('btn_again').textContent=L[l].again}
+function setLang(l){lang=l;localStorage.setItem('cl',l);document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.lang-btn').forEach(b=>{if((l==='zh'&&b.textContent.includes('中文'))||(l==='lo'&&b.textContent.includes('ລາວ'))||(l==='en'&&b.textContent.includes('English')))b.classList.add('active')});const m={title:'title',subtitle:'subtitle',h_create:'h_create',h_wait:'h_wait',h_join:'h_join',l_name:'l_name',l_name2:'l_name2',l_share:'l_share',l_online:'l_online',l_ppl:'l_ppl',l_rid:'l_rid',l_round:'l_round',l_curr:'l_curr',l_play:'l_play',l_wait:'l_wait',l_hand:'l_hand',l_tip:'l_tip',l_pass:'l_pass',l_ready:'l_ready',tip_text:'tip_text'};Object.keys(m).forEach(k=>{const el=document.getElementById(m[k]);if(el)el.textContent=L[l][k]||el.textContent});document.getElementById('cs2').textContent=L[l].conn;document.getElementById('btn_create').textContent=L[l].start;document.getElementById('btn_copy').textContent=L[l].copy;document.getElementById('btn_start').textContent=L[l].start;document.getElementById('btn_join').textContent=L[l].join;document.getElementById('btn_play').textContent=L[l].btnPlay;document.getElementById('btn_pass').textContent=L[l].btnPass;document.getElementById('btn_next').textContent=L[l].btnNext;document.getElementById('btn_exit').textContent=L[l].btnExit;document.getElementById('btn_ready').textContent=L[l].ready2;document.getElementById('btn_again').textContent=L[l].again;document.getElementById('tip_text').innerHTML=L[l].copyHelp}
 function t(k){return L[lang][k]||k}
 let peer=null,myId=null,isHost=false,rh=null,players=[],mi=-1,cr2=0,cci=0,lp=null,lpi=-1,rh2=[],sc=-1;
 const SU=['spade','club','diamond','heart'],SS={spade:'♠',club:'♣',diamond:'♦',heart:'♥'},SO={spade:0,club:1,diamond:2,heart:3};
 const RK=['2','3','4','5','6','7','8','9','10','J','Q','K','A'],RV={};RK.forEach((r,i)=>RV[r]=i+2);
-function ip(){peer=new Peer();peer.on('open',id=>{myId=id;document.getElementById('cs2').className='cs2 ok';document.getElementById('cs2').textContent=t('connOk')});peer.on('connection',c=>hi(c));peer.on('error',()=>tt('Error'))}
-function cr(){const n=document.getElementById('mn').value.trim();if(!n)return tt(t('selCard'));isHost=true;rh=myId;mi=0;players=[{id:myId,name:n,conn:null,hand:[],tungs:0,eliminated:false}];document.getElementById('cp').style.display='none';document.getElementById('wp').style.display='block';document.getElementById('rid').textContent=myId.toUpperCase();uw()}
-function hi(c){c.on('open',()=>{if(!isHost)return;c.on('data',d=>{if(d.type==='join'){players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});bc();uw();tt(d.name+t('joinMsg'))}})})}
+function ip(){
+  const cs=new cs2({iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]});
+  peer=new Peer({config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]}});
+  peer.on('open',id=>{
+    myId=id;
+    document.getElementById('cs2').className='cs2 ok';
+    document.getElementById('cs2').textContent=t('connOk');
+    document.getElementById('tip_text').innerHTML=t('copyId');
+  });
+  peer.on('connection',c=>hi(c));
+  peer.on('error',e=>{
+    console.error('PeerJS error:',e);
+    document.getElementById('cs2').className='cs2 err';
+    document.getElementById('cs2').textContent=t('connFail');
+    tt(t('error'));
+  });
+  setTimeout(()=>{if(!myId){document.getElementById('cs2').className='cs2 err';document.getElementById('cs2').textContent=t('connFail')}},15000);
+}
+function cr(){const n=document.getElementById('mn').value.trim();if(!n){tt(t('nameEmpty'));return}isHost=true;rh=myId;mi=0;players=[{id:myId,name:n,conn:null,hand:[],tungs:0,eliminated:false}];document.getElementById('cp').style.display='none';document.getElementById('wp').style.display='block';document.getElementById('rid').textContent=myId.toUpperCase();uw()}
+function hi(c){c.on('open',()=>{if(!isHost)return;c.on('data',d=>{if(d.type==='join'){players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});bc();uw();tt(d.name+t('joinMsg'))}if(d.type==='act')pa(c.peer,d.a,d.d)})});c.on('close',()=>{const pi=players.findIndex(p=>p.id===c.peer);if(pi>=0){players.splice(pi,1);bc();uw()}})}
 function uw(){document.getElementById('oc').textContent=players.length;document.getElementById('bs').disabled=players.length<2;document.getElementById('wp2').innerHTML=players.map((p,i)=>'<div style="background:rgba(255,255,255,.1);padding:8px 12px;border-radius:8px;margin:5px 0;color:#fff;font-size:13px">'+(i===0?t('host'):'👤')+' '+p.name+(p.id===myId?' '+t('me'):'')+'</div>').join('')}
-function jr(){const n=document.getElementById('jn').value.trim(),id=document.getElementById('jrid').value.trim().toUpperCase();if(!n||!id)return tt(t('selCard'));const c=peer.connect(id);c.on('open',()=>{isHost=false;rh=id;c.send({type:'join',name:n});c.on('data',hm);document.getElementById('lb').style.display='none';document.getElementById('ga').classList.add('show');tt(t('joined'))});c.on('error',()=>tt('Error'))}
+function jr(){const n=document.getElementById('jn').value.trim(),id=document.getElementById('jrid').value.trim().toUpperCase();if(!n){tt(t('nameEmpty'));return}if(!id){tt(t('idEmpty'));return}const c=peer.connect(id,{metadata:{name:n}});c.on('open',()=>{isHost=false;rh=id;c.send({type:'join',name:n});c.on('data',hm);c.on('close',()=>{tt(t('error'))});document.getElementById('lb').style.display='none';document.getElementById('ga').classList.add('show');tt(t('joined'))});c.on('error',e=>{console.error('Connect error:',e);tt(t('error'))});setTimeout(()=>{if(!c.open)tt(t('connFail'))},10000)}
 function hm(d){if(d.type==='gs'){mi=d.po.indexOf(myId);cr2=d.cr;cci=d.ci;lp=d.lp;lpi=d.lpi;rh2=d.rh||[];players=d.ps.map(p=>{const ex=players.find(e=>e.id===p.id);return{...p,conn:ex?.conn||null}});ug();if(d.st==='go')sr(d.w);if(d.rw!==undefined){tt(players[d.rw]?.name+t('winRound'));if(cr2<6)document.getElementById('bn').style.display='inline-block'}}}
 function sg(){if(!isHost||players.length<2)return;let dk=[];for(const s of SU)for(const r of RK)dk.push({suit:s,rank:r,value:RV[r],suitOrder:SO[s]});sh(dk);players.forEach(p=>{p.hand=sc2(dk.splice(0,6));p.tungs=0;p.eliminated=false});cr2=0;cci=0;lp=null;lpi=-1;rh2=[];bc()}
 function bc(){if(!isHost)return;const s={type:'gs',st:cr2<6?'play':'go',po:players.map(p=>p.id),cr,cci:cci,lp,lpi,rh:rh2,ps:players.map(p=>({id:p.id,name:p.name,hc:p.hand.length,h:p.hand,tungs:p.tungs,eliminated:p.eliminated}))};players.forEach(p=>{if(p.conn&&p.conn.open){p.conn.send({...s,ps:s.ps.map(sp=>({...sp,h:sp.id===p.id?sp.h:sp.h.map(()=>null)}))})}else if(p.id===myId)hm(s)})}
@@ -135,11 +154,11 @@ function pc(){if(sc<0)return tt(t('selCard'));pa(myId,'play',{ci:sc});sc=-1}
 function ps(){pa(myId,'pass',{})}
 function sr(wi){document.getElementById('rt').textContent=t('winner')+' '+(players[wi]?.name||'');document.getElementById('ri2').textContent=t('tung')+': '+(players[0]?.tungs||0)+' vs '+(players[1]?.tungs||0);document.getElementById('rsp').classList.add('show')}
 function ho(){document.getElementById('ov').classList.remove('show')}
-function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').textContent);tt(t('copied'))}
+function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').textContent).then(()=>tt(t('copied'))).catch(()=>tt(t('copied')))}
 function tt(m){const e=document.getElementById('ts');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}
 function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 function sc2(h){return h.sort((a,b)=>a.suit!==b.suit?a.suitOrder-b.suitOrder:a.value-b.value)}
-document.getElementById('mn').value='Player'+Math.floor(Math.random()*100);
+document.getElementById('mn').value='P'+Math.floor(Math.random()*1000);
 document.getElementById('jn').value=document.getElementById('mn').value;
 ip();setLang(lang);
 </script>
