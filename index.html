@@ -10,12 +10,15 @@
 body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1a4e);min-height:100vh}
 .c{max-width:800px;margin:0 auto;padding:10px}
 .h{text-align:center;padding:15px 0}.h h1{color:#ffd700;font-size:24px}.h p{color:#888;font-size:11px}
+.lang-bar{display:flex;justify-content:center;gap:10px;margin-bottom:15px}
+.lang-btn{padding:6px 15px;border:2px solid rgba(255,255,255,.3);border-radius:20px;background:transparent;color:#aaa;font-size:12px;cursor:pointer;transition:all .2s}
+.lang-btn.active{border-color:#ffd700;color:#ffd700;background:rgba(255,215,0,.1)}
 .p{background:rgba(255,255,255,.05);border-radius:15px;padding:20px;margin-bottom:15px}
 .p h2{color:#fff;font-size:18px;margin-bottom:15px;text-align:center}
 .ig{margin-bottom:12px}.ig label{display:block;color:#aaa;font-size:12px;margin-bottom:5px}
 .ig input{width:100%;padding:12px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;font-size:14px}
 .rib{background:rgba(0,255,100,.1);border:2px dashed #00ff88;border-radius:10px;padding:15px;text-align:center;margin:15px 0}
-.rib .id{color:#00ff88;font-size:28px;font-weight:bold;margin:8px 0}
+.rib .id{color:#00ff88;font-size:36px;font-weight:bold;margin:8px 0;letter-spacing:8px}
 .b{display:inline-block;padding:12px 30px;border:none;border-radius:25px;font-size:14px;font-weight:bold;cursor:pointer;margin:5px}
 .b:disabled{opacity:.5}.bg{background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000}
 .bgr{background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff}
@@ -51,33 +54,38 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 </head>
 <body>
 <div class="c">
-<div class="h"><h1>🃏 Cát Tệ</h1><p>P2P Online Game</p></div>
-<div id="cs2" class="cs2 wait">Connecting...</div>
+<div class="h"><h1 id="title">🃏 Cát Tệ</h1><p id="subtitle">P2P Online Game</p></div>
+<div class="lang-bar">
+<button class="lang-btn active" id="btn_lo" onclick="setLang('lo')">🇱🇦 ລາວ</button>
+<button class="lang-btn" id="btn_zh" onclick="setLang('zh')">🇨🇳 中文</button>
+<button class="lang-btn" id="btn_en" onclick="setLang('en')">🇬🇧 English</button>
+</div>
+<div id="cs2" class="cs2 wait" id="status">Connecting...</div>
 <div id="lb">
-<div class="p" id="cp"><h2>🎮 Create Room</h2>
-<div class="ig"><label>Your Name</label><input type="text" id="mn" value=""></div>
-<button class="b bg bf" onclick="cr()">Create Room</button></div>
-<div class="p" id="wp" style="display:none"><h2>⏳ Waiting</h2>
-<div class="rib"><div style="color:#888;font-size:12px">Send this ID to friend</div>
+<div class="p" id="cp"><h2 id="h_create">🎮 Create Room</h2>
+<div class="ig"><label id="l_name">Your Name</label><input type="text" id="mn" value=""></div>
+<button class="b bg bf" onclick="cr()" id="btn_create">Create Room</button></div>
+<div class="p" id="wp" style="display:none"><h2 id="h_wait">⏳ Waiting</h2>
+<div class="rib"><div style="color:#888;font-size:12px" id="l_share">Send this ID to friend</div>
 <div class="id" id="rid">-</div>
-<button class="b" style="background:rgba(0,255,136,.2);color:#00ff88;border:1px solid #00ff88;padding:6px 20px;border-radius:15px;font-size:12px" onclick="cp2()">📋 Copy ID</button>
-<div style="color:#ff9800;font-size:11px;margin-top:8px">⚠️ Keep this page open! Don't close or switch apps</div></div>
-<div style="color:#fff;font-size:13px;margin:10px 0">Online: <span id="oc">1</span></div>
+<button class="b" style="background:rgba(0,255,136,.2);color:#00ff88;border:1px solid #00ff88;padding:6px 20px;border-radius:15px;font-size:12px" onclick="cp2()" id="btn_copy">📋 Copy</button>
+<div style="color:#ff9800;font-size:11px;margin-top:8px" id="l_warn">⚠️ Keep page open!</div></div>
+<div style="color:#fff;font-size:13px;margin:10px 0"><span id="l_online">Online</span>: <span id="oc">1</span></div>
 <div id="wp2"></div>
-<button class="b bgr bf" id="bs" onclick="sg()" disabled>Start (2 players needed)</button></div>
-<div class="p"><h2>🔗 Join Room</h2>
-<div class="ig"><label>Your Name</label><input type="text" id="jn" value=""></div>
-<div class="ig"><label>Room ID from friend</label><input type="text" id="jrid" placeholder="Paste ID here"></div>
-<button class="b bgr bf" onclick="jr()">Join Room</button>
-<div style="color:#ff9800;font-size:11px;margin-top:10px;text-align:center">⚠️ Don't close this page after joining!</div></div>
+<button class="b bgr bf" id="bs" onclick="sg()" disabled id="btn_start">Start (2 players needed)</button></div>
+<div class="p"><h2 id="h_join">🔗 Join Room</h2>
+<div class="ig"><label id="l_name2">Your Name</label><input type="text" id="jn" value=""></div>
+<div class="ig"><label id="l_rid">Room ID from friend</label><input type="text" id="jrid" placeholder="4-digit code"></div>
+<button class="b bgr bf" onclick="jr()" id="btn_join">Join Room</button>
+<div style="color:#ff9800;font-size:11px;margin-top:10px;text-align:center" id="l_warn2">⚠️ Don't close after joining!</div></div>
 </div>
 <div id="ga" class="ga">
-<div class="sb"><span>Round: <span class="hl" id="ri">1/6</span></span> | <span>Turn: <span class="hl" id="ti">-</span></span></div>
+<div class="sb"><span id="l_round">Round</span>: <span class="hl" id="ri">1/6</span> | <span id="l_turn">Turn</span>: <span class="hl" id="ti">-</span></div>
 <div class="gt"><div class="s" id="sa"></div>
-<div class="pa"><div style="color:#555;font-size:11px">Current Play</div>
-<div id="cc" style="display:flex;justify-content:center;gap:10px;margin:10px 0;min-height:70px;align-items:center"><span style="color:#444;font-size:12px">Waiting...</span></div>
+<div class="pa"><div style="color:#555;font-size:11px" id="l_play">Current Play</div>
+<div id="cc" style="display:flex;justify-content:center;gap:10px;margin:10px 0;min-height:70px;align-items:center"><span style="color:#444;font-size:12px" id="l_wait">Waiting...</span></div>
 <div id="cb" style="color:#ffd700;font-size:12px"></div></div>
-<div class="ha"><div style="color:#fff;font-size:13px;margin-bottom:8px">Your Cards <span id="mc">(6)</span></div>
+<div class="ha"><div style="color:#fff;font-size:13px;margin-bottom:8px"><span id="l_hand">Your Cards</span> <span id="mc">(6)</span></div>
 <div id="mh" style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap"></div></div></div>
 <div class="as"><button class="b bgr" id="bp" onclick="pc()" style="display:none">Play</button>
 <button class="b bg" id="bps" onclick="ps()" style="display:none">Pass</button>
@@ -87,34 +95,66 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1
 <div class="ts" id="ts"></div>
 <div class="rs" id="rsp"><div class="rb"><h2 id="rt" style="color:#ffd700;font-size:32px;margin-bottom:15px"></h2>
 <p id="ri2" style="color:#fff;margin-bottom:25px"></p>
-<button class="b bg" onclick="location.reload()">Play Again</button></div></div>
+<button class="b bg" onclick="location.reload()" id="btn_again">Play Again</button></div></div>
 <script>
+// Languages
+const L={
+lo:{title:'🃏 ຊາເຈົ້າ Cát Tệ',subtitle:'P2P Online Game',conn:'Connecting...',connOk:'✓ Connected',connFail:'✗ Error',hCreate:'🎮 Create Room',hWait:'⏳ Waiting',hJoin:'🔗 Join Room',name:'Your Name',name2:'Your Name',share:'Send this ID to friend',copy:'📋 Copy',online:'Online',rid:'Room ID from friend',join:'Join',round:'Round',turn:'Turn',play:'Current Play',wait:'Waiting...',hand:'Your Cards',start:'Start (2 players needed)',warn:'⚠️ Keep page open!',warn2:'⚠️ Don\'t close after joining!',again:'Play Again'},
+zh:{title:'🃏 萨切 Cát Tệ',subtitle:'P2P在线游戏',conn:'连接中...',connOk:'✓ 已连接',connFail:'✗ 连接失败',hCreate:'🎮 创建房间',hWait:'⏳ 等待中',hJoin:'🔗 加入房间',name:'你的昵称',name2:'你的昵称',share:'把ID发给朋友',copy:'📋 复制',online:'在线',rid:'朋友的房间ID',join:'加入',round:'轮次',turn:'当前',play:'当前出牌',wait:'等待中...',hand:'你的手牌',start:'开始（需要2人）',warn:'⚠️ 保持页面打开！',warn2:'⚠️ 不要关闭页面！',again:'再来一局'},
+en:{title:'🃏 Cát Tệ',subtitle:'P2P Online Game',conn:'Connecting...',connOk:'✓ Connected',connFail:'✗ Error',hCreate:'🎮 Create Room',hWait:'⏳ Waiting',hJoin:'🔗 Join Room',name:'Your Name',name2:'Your Name',share:'Send this ID to friend',copy:'📋 Copy',online:'Online',rid:'Room ID from friend',join:'Join',round:'Round',turn:'Turn',play:'Current Play',wait:'Waiting...',hand:'Your Cards',start:'Start (2 players needed)',warn:'⚠️ Keep page open!',warn2:'⚠️ Don\'t close after joining!',again:'Play Again'}
+};
+let lang=localStorage.getItem('cl')||'lo';
+function setLang(l){
+  lang=l;localStorage.setItem('cl',l);
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn_'+l)?.classList.add('active');
+  const m=L[l];
+  document.getElementById('title').textContent=m.title;
+  document.getElementById('subtitle').textContent=m.subtitle;
+  document.getElementById('h_create').textContent=m.hCreate;
+  document.getElementById('h_wait').textContent=m.hWait;
+  document.getElementById('h_join').textContent=m.hJoin;
+  document.getElementById('l_name').textContent=m.name;
+  document.getElementById('l_name2').textContent=m.name2;
+  document.getElementById('l_share').textContent=m.share;
+  document.getElementById('l_rid').textContent=m.rid;
+  document.getElementById('l_online').textContent=m.online;
+  document.getElementById('l_round').textContent=m.round;
+  document.getElementById('l_turn').textContent=m.turn;
+  document.getElementById('l_play').textContent=m.play;
+  document.getElementById('l_wait').textContent=m.wait;
+  document.getElementById('l_hand').textContent=m.hand;
+  document.getElementById('l_warn').textContent=m.warn;
+  document.getElementById('l_warn2').textContent=m.warn2;
+  document.getElementById('btn_create').textContent=m.start;
+  document.getElementById('btn_start').textContent=m.start;
+  document.getElementById('btn_join').textContent=m.join;
+  document.getElementById('btn_copy').textContent=m.copy;
+  document.getElementById('btn_again').textContent=m.again;
+}
+
 let peer=null,myId=null,isHost=false,rh=null,players=[],mi=-1,cr2=0,cci=0,lp=null,lpi=-1,rh2=[],sc=-1;
 const SU=['spade','club','diamond','heart'],SS={spade:'♠',club:'♣',diamond:'♦',heart:'♥'},SO={spade:0,club:1,diamond:2,heart:3};
 const RK=['2','3','4','5','6','7','8','9','10','J','Q','K','A'],RV={};RK.forEach((r,i)=>RV[r]=i+2);
 
-// Keep-alive ping
-let pingInterval=null;
+// Generate 4-digit ID
+function gen4(){return String(Math.floor(1000+Math.random()*9000))}
 
 function ip(){
   peer=new Peer({config:{iceServers:[{urls:'stun:stun.l.google.com:19302'}]}});
   peer.on('open',id=>{
     myId=id;
     document.getElementById('cs2').className='cs2 ok';
-    document.getElementById('cs2').textContent='✓ Connected';
+    document.getElementById('cs2').textContent=L[lang].connOk;
     console.log('ID:',id);
-    // Start keep-alive
-    pingInterval=setInterval(()=>{if(peer&&peer.socket)peer.socket.send({type:'ping'})},25000);
+    setInterval(()=>{if(peer&&peer.socket)peer.socket.send({type:'ping'})},25000);
   });
   peer.on('connection',c=>hi(c));
-  peer.on('disconnected',()=>{
-    console.log('Disconnected from server, reconnecting...');
-    if(peer)peer.reconnect();
-  });
+  peer.on('disconnected',()=>{if(peer)peer.reconnect()});
   peer.on('error',e=>{
     console.error('Error:',e);
     document.getElementById('cs2').className='cs2 err';
-    document.getElementById('cs2').textContent='✗ Error';
+    document.getElementById('cs2').textContent=L[lang].connFail;
   });
 }
 
@@ -126,17 +166,15 @@ function cr(){
   players=[{id:myId,name:n,conn:null,hand:[],tungs:0,eliminated:false}];
   document.getElementById('cp').style.display='none';
   document.getElementById('wp').style.display='block';
-  document.getElementById('rid').textContent=myId.toUpperCase();
+  // Show 4-digit code
+  document.getElementById('rid').textContent=gen4();
   uw();
 }
 
 function hi(c){
-  console.log('Incoming connection from:',c.peer);
   c.on('open',()=>{
-    console.log('Connection opened with:',c.peer);
     if(!isHost)return;
     c.on('data',d=>{
-      console.log('Data from',c.peer,':',d.type);
       if(d.type==='join'){
         players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});
         bc();uw();tt(d.name+' joined');
@@ -144,9 +182,7 @@ function hi(c){
       if(d.type==='act')pa(c.peer,d.a,d.d);
       if(d.type==='ping')c.send({type:'pong'});
     });
-    c.on('close',()=>{console.log('Connection closed:',c.peer)});
   });
-  c.on('error',e=>console.error('Connection error:',e));
 }
 
 function uw(){
@@ -156,33 +192,26 @@ function uw(){
 }
 
 function jr(){
-  const n=document.getElementById('jn').value.trim(),id=document.getElementById('jrid').value.trim().toUpperCase();
+  const n=document.getElementById('jn').value.trim(),id=document.getElementById('jrid').value.trim();
   if(!n||!id){alert('Fill all');return}
   tt('Connecting...');
   const c=peer.connect(id,{reliable:true});
   c.on('open',()=>{
-    console.log('Connected to host:',id);
     isHost=false;rh=id;
     c.send({type:'join',name:n});
     c.on('data',d=>{
-      console.log('Data from host:',d.type);
       if(d.type==='act')pa(c.peer,d.a,d.d);
       if(d.type==='gs')hm(d);
       if(d.type==='ping')c.send({type:'pong'});
     });
-    c.on('close',()=>{tt('Connection lost!');setTimeout(()=>location.reload(),2000)});
-    // Keep-alive for guest
+    c.on('close',()=>{tt('Lost!');setTimeout(()=>location.reload(),2000)});
     setInterval(()=>{if(c.open)c.send({type:'ping'})},25000);
     document.getElementById('lb').style.display='none';
     document.getElementById('ga').classList.add('show');
-    tt('Joined!');
+    tt(L[lang].connOk);
   });
-  c.on('error',e=>{
-    console.error('Connect error:',e);
-    tt('Connection error');
-  });
-  // Timeout
-  setTimeout(()=>{if(!c.open)tt('Timeout - try again')},10000);
+  c.on('error',()=>tt(L[lang].connFail));
+  setTimeout(()=>{if(!c.open)tt('Timeout')},10000);
 }
 
 function hm(d){
@@ -267,7 +296,7 @@ function rs(){
 
 function rc(){
   const c=document.getElementById('cc'),b=document.getElementById('cb');
-  if(!lp){c.innerHTML='<span style="color:#444;font-size:12px">Waiting...</span>';b.textContent='';return}
+  if(!lp){c.innerHTML='<span style="color:#444;font-size:12px">'+L[lang].wait+'</span>';b.textContent='';return}
   c.innerHTML='<div class="cd '+(lp.suit==='heart'||lp.suit==='diamond'?'r':'k')+'" style="cursor:default"><div class="cn t"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div><div class="cc">'+SS[lp.suit]+'</div><div class="cn b"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div></div>';
   b.textContent=(players[lpi]?.name||'');
 }
@@ -300,8 +329,7 @@ function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').tex
 
 document.getElementById('mn').value='P'+Math.floor(Math.random()*1000);
 document.getElementById('jn').value=document.getElementById('mn').value;
-ip();
+ip();setLang(lang);
 </script>
 </body>
 </html>
-
