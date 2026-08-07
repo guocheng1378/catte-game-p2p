@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🃏 萨切 - P2P联机</title>
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a2e,#1a1a4e);min-height:100vh}
+        .c{max-width:800px;margin:0 auto;padding:10px}
+        .h{text-align:center;padding:15px 0}
+        .h h1{color:#ffd700;font-size:24px}
+        .h p{color:#888;font-size:11px;margin-top:5px}
+        .p{background:rgba(255,255,255,.05);border-radius:15px;padding:20px;margin-bottom:15px}
+        .p h2{color:#fff;font-size:18px;margin-bottom:15px;text-align:center}
+        .ig{margin-bottom:12px}
+        .ig label{display:block;color:#aaa;font-size:12px;margin-bottom:5px}
+        .ig input{width:100%;padding:12px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;font-size:14px}
+        .rib{background:rgba(0,255,100,.1);border:2px dashed #00ff88;border-radius:10px;padding:15px;text-align:center;margin:15px 0}
+        .rib .id{color:#00ff88;font-size:28px;font-weight:bold;letter-spacing:2px;margin:8px 0}
+        .b{display:inline-block;padding:12px 30px;border:none;border-radius:25px;font-size:14px;font-weight:bold;cursor:pointer;transition:all .2s;margin:5px}
+        .b:disabled{opacity:.5}
+        .bg{background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000}
+        .bgr{background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff}
+        .br{background:linear-gradient(135deg,#f44336,#c62828);color:#fff}
+        .b:hover:not(:disabled){transform:scale(1.05)}
+        .bf{width:100%;text-align:center}
+        .sb{display:flex;justify-content:space-between;background:rgba(0,0,0,.3);padding:8px 15px;border-radius:8px;margin-bottom:10px}
+        .sb span{color:#fff;font-size:12px}
+        .sb .hl{color:#ffd700;font-weight:bold}
+        .ga{display:none}
+        .ga.show{display:block}
+        .gt{background:radial-gradient(ellipse,#1a3a2a,#0a2a1a);border-radius:15px;padding:15px;border:4px solid #2a4a3a}
+        .s{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+        .st{background:rgba(0,0,0,.3);border-radius:10px;padding:10px;min-width:90px;text-align:center;border:2px solid transparent}
+        .st.a{border-color:#00ff00}
+        .st.m{border-color:#ffd700}
+        .st .n{color:#fff;font-size:12px;font-weight:bold}
+        .pa{background:rgba(0,0,0,.2);border-radius:10px;padding:20px;text-align:center;margin-bottom:15px;min-height:100px}
+        .ha{text-align:center}
+        .cd{width:55px;height:80px;background:#fff;border-radius:6px;box-shadow:2px 2px 8px rgba(0,0,0,.3);display:inline-flex;flex-direction:column;justify-content:space-between;padding:4px;cursor:pointer;transition:all .2s;position:relative;margin:0 3px}
+        .cd:hover{transform:translateY(-8px)}
+        .cd.sel{transform:translateY(-12px);box-shadow:0 0 15px #ffd700;border:2px solid #ffd700}
+        .cd.r{color:#d32f2f}
+        .cd.k{color:#212121}
+        .cd.mini{width:28px;height:40px}
+        .cd.bk{background:linear-gradient(135deg,#1a237e,#283593)}
+        .cd .cc{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px}
+        .cd .cr{font-size:12px;font-weight:bold}
+        .cd .cs{font-size:10px}
+        .cd .cn{display:flex;flex-direction:column;align-items:center;line-height:1}
+        .cd .cn.t{align-self:flex-start}
+        .cd .cn.b{align-self:flex-end;transform:rotate(180deg)}
+        .as{display:flex;justify-content:center;gap:10px;margin-top:15px}
+        .ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:1000}
+        .ov.show{display:flex}
+        .ts{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000;padding:15px 30px;border-radius:10px;font-size:16px;font-weight:bold;z-index:500;display:none}
+        .ts.show{display:block}
+        .rs{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:200}
+        .rs.show{display:flex}
+        .rb{background:linear-gradient(135deg,#1a237e,#283593);border-radius:20px;padding:40px;text-align:center}
+        .cs2{position:fixed;bottom:10px;right:10px;padding:5px 10px;border-radius:5px;font-size:10px;color:#fff}
+        .cs2.ok{background:#4caf50}
+        .cs2.err{background:#f44336}
+    </style>
+</head>
+<body>
+    <div class="c">
+        <div class="h"><h1>🃏 萨切 Cát Tệ</h1><p>P2P联机 · 无需服务器</p></div>
+        <div id="cs2" class="cs2 err">连接中...</div>
+        <div id="lb">
+            <div class="p" id="cp">
+                <h2>🎮 创建房间</h2>
+                <div class="ig"><label>你的昵称</label><input type="text" id="mn" value=""></div>
+                <button class="b bg bf" onclick="cr()">创建房间</button>
+            </div>
+            <div class="p" id="wp" style="display:none">
+                <h2>⏳ 等待玩家加入</h2>
+                <div class="rib"><div style="color:#888;font-size:12px">分享此房间ID给朋友</div><div class="id" id="rid">-</div><button class="b" style="background:rgba(0,255,136,.2);color:#00ff88;border:1px solid #00ff88;padding:6px 20px;border-radius:15px;font-size:12px" onclick="cp2()">📋 复制ID</button></div>
+                <div style="color:#fff;font-size:13px;margin:10px 0">在线: <span id="oc">1</span>人</div>
+                <div id="wp2"></div>
+                <button class="b bgr bf" id="bs" onclick="sg()" disabled>开始游戏（需2人）</button>
+            </div>
+            <div class="p">
+                <h2>🔗 加入房间</h2>
+                <div class="ig"><label>你的昵称</label><input type="text" id="jn" value=""></div>
+                <div class="ig"><label>房间ID</label><input type="text" id="jrid" placeholder="输入房间ID"></div>
+                <button class="b bgr bf" onclick="jr()">加入房间</button>
+            </div>
+        </div>
+        <div id="ga" class="ga">
+            <div class="sb"><span>轮次: <span class="hl" id="ri">1/6</span></span><span>当前: <span class="hl" id="ti">-</span></span></div>
+            <div class="gt">
+                <div class="s" id="sa"></div>
+                <div class="pa"><div style="color:#555;font-size:11px">当前出牌</div><div id="cc" style="display:flex;justify-content:center;gap:10px;margin:10px 0;min-height:70px;align-items:center"><span style="color:#444;font-size:12px">等待出牌...</span></div><div id="cb" style="color:#ffd700;font-size:12px"></div></div>
+                <div class="ha"><div style="color:#fff;font-size:13px;margin-bottom:8px">你的手牌 <span id="mc">(6)</span></div><div id="mh" style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap"></div></div>
+            </div>
+            <div class="as"><button class="b bgr" id="bp" onclick="pc()" style="display:none">出牌</button><button class="b bg" id="bps" onclick="ps()" style="display:none">跳过</button><button class="b bg" id="bn" onclick="nr()" style="display:none">下一轮</button><button class="b br" onclick="location.reload()">退出</button></div>
+            <div style="color:#555;font-size:11px;text-align:center;margin-top:8px">点击选择牌，然后点出牌</div>
+        </div>
+    </div>
+    <div class="ov" id="ov"><h2 style="color:#ffd700;font-size:24px;margin-bottom:20px">🔄 请交给下一位玩家</h2><p style="color:#fff;margin-bottom:25px">准备好后点击按钮</p><button class="b bg" onclick="ho()">我准备好了</button></div>
+    <div class="ts" id="ts"></div>
+    <div class="rs" id="rsp"><div class="rb"><h2 id="rt" style="color:#ffd700;font-size:32px;margin-bottom:15px"></h2><p id="ri2" style="color:#fff;margin-bottom:25px"></p><button class="b bg" onclick="location.reload()">再来一局</button></div></div>
+    <script>
+        let peer=null,myId=null,isHost=false,rh=null,players=[],mi=-1,cr2=0,cci=0,lp=null,lpi=-1,rh2=[],sc=-1;
+        const SU=['spade','club','diamond','heart'],SS={spade:'♠',club:'♣',diamond:'♦',heart:'♥'},SO={spade:0,club:1,diamond:2,heart:3};
+        const RK=['2','3','4','5','6','7','8','9','10','J','Q','K','A'],RV={};RK.forEach((r,i)=>RV[r]=i+2);
+        function ip(){peer=new Peer();peer.on('open',id=>{myId=id;document.getElementById('cs2').className='cs2 ok';document.getElementById('cs2').textContent='✓ 已连接';});peer.on('connection',c=>hi(c));peer.on('error',()=>tt('连接错误'));}
+        function cr(){const n=document.getElementById('mn').value.trim();if(!n)return tt('请输入昵称');isHost=true;rh=myId;mi=0;players=[{id:myId,name:n,conn:null,hand:[],tungs:0,eliminated:false}];document.getElementById('cp').style.display='none';document.getElementById('wp').style.display='block';document.getElementById('rid').textContent=myId.toUpperCase();uw();}
+        function hi(c){c.on('open',()=>{if(!isHost)return;c.on('data',d=>{if(d.type==='join'){players.push({id:c.peer,name:d.name,conn:c,hand:[],tungs:0,eliminated:false});bc();uw();tt(d.name+' 加入了');}});});}
+        function uw(){document.getElementById('oc').textContent=players.length;document.getElementById('bs').disabled=players.length<2;document.getElementById('wp2').innerHTML=players.map((p,i)=>'<div style="background:rgba(255,255,255,.1);padding:8px 12px;border-radius:8px;margin:5px 0;color:#fff;font-size:13px">'+(i===0?'👑':'👤')+' '+p.name+(p.id===myId?' (我)':'')+'</div>').join('');}
+        function jr(){const n=document.getElementById('jn').value.trim(),id=document.getElementById('jrid').value.trim().toUpperCase();if(!n||!id)return tt('请输入昵称和ID');const c=peer.connect(id);c.on('open',()=>{isHost=false;rh=id;c.send({type:'join',name:n});c.on('data',hm);document.getElementById('lb').style.display='none';document.getElementById('ga').classList.add('show');tt('已加入');});c.on('error',()=>tt('连接失败'));}
+        function hm(d){if(d.type==='gs'){mi=d.po.indexOf(myId);cr2=d.cr;cci=d.ci;lp=d.lp;lpi=d.lpi;rh2=d.rh||[];players=d.ps.map(p=>{const ex=players.find(e=>e.id===p.id);return{...p,conn:ex?.conn||null};});ug();if(d.st==='go')sr(d.w);if(d.rw!==undefined){tt(players[d.rw]?.name+' 赢得本轮！');if(cr2<6)document.getElementById('bn').style.display='inline-block';}}}
+        function sg(){if(!isHost||players.length<2)return;let dk=[];for(const s of SU)for(const r of RK)dk.push({suit:s,rank:r,value:RV[r],suitOrder:SO[s]});sh(dk);players.forEach(p=>{p.hand=sc2(dk.splice(0,6));p.tungs=0;p.eliminated=false;});cr2=0;cci=0;lp=null;lpi=-1;rh2=[];bc();}
+        function bc(){if(!isHost)return;const s={type:'gs',st:cr2<6?'play':'go',po:players.map(p=>p.id),cr,cci:cci,lp,lpi,rh:rh2,ps:players.map(p=>({id:p.id,name:p.name,hc:p.hand.length,h:p.hand,tungs:p.tungs,eliminated:p.eliminated}))};players.forEach(p=>{if(p.conn&&p.conn.open){p.conn.send({...s,ps:s.ps.map(sp=>({...sp,h:sp.id===p.id?sp.h:sp.h.map(()=>null)}))});}else if(p.id===myId)hm(s);});}
+        function pa(pid,a,d){const pi=players.findIndex(p=>p.id===pid);if(pi!==cci)return;if(a==='play'){const c=players[pi].hand[d.ci];if(!c)return;if(lp){if(c.suit!==lp.suit&&players[pi].hand.some(x=>x.suit===lp.suit)){tt('必须出同花色');return;}if(c.suit===lp.suit&&c.value<=lp.value){tt('必须出更大的牌');return;}}players[pi].hand.splice(d.ci,1);lp=c;lpi=pi;rh2.push({pi,c});if(players[pi].hand.length===0){er(pi);return;}nt();}else if(a==='pass'){if(!rh2.length){tt('必须出牌');return;}er(lpi);}bc();}
+        function er(wi){players[wi].tungs++;if(cr2===4)players.forEach(p=>{if(p.tungs===0)p.eliminated=true;});bc({rw:wi});}
+        function nt(){let n=cci;do{n=(n+1)%players.length;}while(n!==cci&&(players[n].eliminated||players[n].hand.length===0));cci=n;}
+        function nr(){document.getElementById('bn').style.display='none';cr2++;if(cr2>=6){let w=0,mt=-1;players.forEach((p,i)=>{if(!p.eliminated&&p.tungs>mt){mt=p.tungs;w=i;}});bc({st:'go',w});return;}lp=null;lpi=-1;rh2=[];cci=0;bc();}
+        peer?.on('connection',c=>{c.on('data',d=>{if(d.type==='act')pa(c.peer,d.a,d.d);});});
+        function ug(){if(!players.length)return;document.getElementById('ri').textContent=(cr2+1)+'/6';document.getElementById('ti').textContent=players[cci]?.name||'-';rs();rc();rh3();ub();}
+        function rs(){document.getElementById('sa').innerHTML=players.map((p,i)=>'<div class="st '+(p.eliminated?'eliminated':i===cci?'a':'')+(p.id===myId?' m':'')+'"><div class="n">'+p.name+(p.id===rh?' 👑':'')+'</div><div style="display:flex;justify-content:center;margin-top:5px">'+Array(p.hc||0).fill('<div class="cd bk mini"></div>').join('')+'</div><div style="color:#888;font-size:10px;margin-top:3px">Tủng: '+p.tungs+(p.eliminated?' ❌':'')+'</div></div>').join('');}
+        function rc(){const c=document.getElementById('cc'),b=document.getElementById('cb');if(!lp){c.innerHTML='<span style="color:#444;font-size:12px">等待出牌...</span>';b.textContent='';return;}c.innerHTML='<div class="cd '+(lp.suit==='heart'||lp.suit==='diamond'?'r':'k')+'" style="cursor:default"><div class="cn t"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div><div class="cc">'+SS[lp.suit]+'</div><div class="cn b"><span class="cr">'+lp.rank+'</span><span class="cs">'+SS[lp.suit]+'</span></div></div>';b.textContent=(players[lpi]?.name||'')+' 出牌';}
+        function rh3(){const me=players.find(p=>p.id===myId);if(!me||!me.h)return;document.getElementById('mc').textContent='('+me.h.length+')';document.getElementById('mh').innerHTML=me.h.map((c,i)=>{if(!c)return'';return'<div class="cd '+(c.suit==='heart'||c.suit==='diamond'?'r':'k')+' '+(sc===i?'sel':'')+'" onclick="sc2('+i+')"><div class="cn t"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div><div class="cc">'+SS[c.suit]+'</div><div class="cn b"><span class="cr">'+c.rank+'</span><span class="cs">'+SS[c.suit]+'</span></div></div>';}).join('');}
+        function sc2(i){if(cci!==mi)return;sc=sc===i?-1:i;rh3();}
+        function ub(){const mt=cci===mi;document.getElementById('bp').style.display=mt?'inline-block':'none';document.getElementById('bps').style.display=mt&&rh2.length>0?'inline-block':'none';}
+        function pc(){if(sc<0)return tt('请先选牌');pa(myId,'play',{ci:sc});sc=-1;}
+        function ps(){pa(myId,'pass',{});}
+        function sr(wi){document.getElementById('rt').textContent='🎉 '+(players[wi]?.name||'')+' 获胜！';document.getElementById('ri2').textContent='Tủng: '+(players[0]?.tungs||0)+' vs '+(players[1]?.tungs||0);document.getElementById('rsp').classList.add('show');}
+        function ho(){document.getElementById('ov').classList.remove('show');}
+        function cp2(){navigator.clipboard?.writeText(document.getElementById('rid').textContent);tt('已复制');}
+        function tt(m){const e=document.getElementById('ts');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000);}
+        function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+        function sc2(h){return h.sort((a,b)=>a.suit!==b.suit?a.suitOrder-b.suitOrder:a.value-b.value);}
+        document.getElementById('mn').value='玩家'+Math.floor(Math.random()*100);
+        document.getElementById('jn').value=document.getElementById('mn').value;
+        ip();
+    </script>
+</body>
+</html>
